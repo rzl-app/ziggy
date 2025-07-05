@@ -18,9 +18,6 @@
     }
   ],
   "autoload": {
-    "files": [
-      "src/Helpers/helper.php"
-    ],
     "psr-4": {
       "RzlApp\\Ziggy\\": "src/"
     }

@@ -39,4 +39,11 @@ class ZiggyServiceProvider extends ServiceProvider
   {
     $blade->directive('rzlRoutes', fn($group) => "<?php echo app('" . BladeRouteGenerator::class . "')->generate({$group}); ?>");
   }
+
+  protected function loadHelpers()
+  {
+    foreach (glob(__DIR__ . '/Helpers/*.php') as $filename) {
+      require_once $filename;
+    }
+  }
 }
