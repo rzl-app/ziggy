@@ -10,6 +10,11 @@ use Illuminate\View\Compilers\BladeCompiler;
 
 class ZiggyServiceProvider extends ServiceProvider
 {
+  public function register()
+  {
+    $this->loadHelpers();
+  }
+
   public function boot()
   {
     if ($this->app->resolved('blade.compiler')) {
