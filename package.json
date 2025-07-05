@@ -1,0 +1,75 @@
+{
+  "authors": [
+    {
+      "email": "rizalvindwiky@gmail.com",
+      "name": "Rizalfin Dwiky"
+    },
+    {
+      "email": "daniel@tighten.co",
+      "name": "Daniel Coulbourne"
+    },
+    {
+      "email": "jake@tighten.co",
+      "name": "Jake Bathman"
+    },
+    {
+      "email": "jacob@tighten.co",
+      "name": "Jacob Baker-Kretzmar"
+    }
+  ],
+  "bugs": "https://github.com/rzl-app/ziggy/issues",
+  "dependencies": {
+    "@types/qs": "^6.9.17",
+    "qs": "~6.9.7"
+  },
+  "description": "Use your Laravel named routes in JavaScript or TypeScript.",
+  "devDependencies": {
+    "jsdom": "^26.1.0",
+    "microbundle": "^0.15.1",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.3"
+  },
+  "exports": {
+    "default": "./dist/index.js",
+    "types": "./dist/types/index.d.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/rzl-app/ziggy",
+  "keywords": [
+    "laravel",
+    "routes",
+    "ziggy"
+  ],
+  "license": "MIT",
+  "mangle": {
+    "regex": "^_(?!query)"
+  },
+  "module": "./dist/index.esm.js",
+  "name": "rzl-ziggy",
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "tabWidth": 2
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rzl-app/ziggy.git"
+  },
+  "scripts": {
+    "build": "npm run build:esm && npm run build:umd && npm run build:types",
+    "build:esm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --external none",
+    "build:umd": "microbundle -i ./src/ts/browser.ts -o ./dist/route.js --format umd --name route --no-sourcemap --external none",
+    "build:types": "tsc -p tsconfig.build.json",
+    "build:npm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --generateTypes",
+    "format": "prettier . --write",
+    "prepublishOnly": "rm -r ./dist/* && npm run build:npm",
+    "test": "vitest --typecheck"
+  },
+  "source": "./src/ts/index.ts",
+  "type": "module",
+  "types": "./dist/types/index.d.ts",
+  "version": "1.0.0"
+}

@@ -1,0 +1,74 @@
+{
+  "authors": [
+    {
+      "email": "rizalvindwiky@gmail.com",
+      "name": "Rizalfin Dwiky"
+    },
+    {
+      "email": "daniel@tighten.co",
+      "name": "Daniel Coulbourne"
+    },
+    {
+      "email": "jake@tighten.co",
+      "name": "Jake Bathman"
+    },
+    {
+      "email": "jacob@tighten.co",
+      "name": "Jacob Baker-Kretzmar"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "src/Helpers/helper.php"
+    ],
+    "psr-4": {
+      "RzlApp\\Ziggy\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "kylekatarnls/update-helper": true,
+      "pestphp/pest-plugin": true
+    },
+    "optimize-autoloader": true,
+    "sort-packages": true
+  },
+  "description": "Generates a Blade directive exporting all of your named Laravel routes. Also provides a nice route() helper function in JavaScript.",
+  "extra": {
+    "laravel": {
+      "providers": [
+        "RzlApp\\Ziggy\\ZiggyServiceProvider"
+      ]
+    }
+  },
+  "homepage": "https://github.com/rzl-app/ziggy",
+  "keywords": [
+    "laravel",
+    "routes",
+    "javascript",
+    "ziggy",
+    "rzl-app",
+    "rzl app",
+    "rzl ziggy"
+  ],
+  "license": "MIT",
+  "minimum-stability": "dev",
+  "name": "rzl-app/ziggy",
+  "prefer-stable": true,
+  "require": {
+    "ext-json": "*",
+    "laravel/framework": ">=9.0",
+    "php": ">=8.1"
+  },
+  "require-dev": {
+    "laravel/folio": "^1.1",
+    "orchestra/testbench": "^7.0 || ^8.0 || ^9.0 || ^10.0",
+    "pestphp/pest": "^2.26|^3.0",
+    "pestphp/pest-plugin-laravel": "^2.4|^3.0"
+  }
+}

@@ -1,0 +1,6 @@
+/vendor
+/node_modules
+/src/js
+/src/ts/*.ts
+/src/ts/**/*.ts
+/src/ts
