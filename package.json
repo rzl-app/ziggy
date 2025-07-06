@@ -41,14 +41,22 @@
   "keywords": [
     "laravel",
     "routes",
-    "ziggy"
+    "ziggy",
+    "rzl-ziggy",
+    "rzl-app",
+    "rzl app",
+    "app",
+    "rzl-ziggy-js",
+    "rzl ziggy js",
+    "rzl ziggy",
+    "ziggy js"
   ],
   "license": "MIT",
   "mangle": {
     "regex": "^_(?!query)"
   },
   "module": "./dist/index.esm.js",
-  "name": "rzl-ziggy",
+  "name": "rzl-ziggy-js",
   "prettier": {
     "printWidth": 100,
     "singleQuote": true,
