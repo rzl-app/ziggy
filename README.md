@@ -5,8 +5,8 @@
 [![GitHub Actions Status](https://img.shields.io/github/actions/workflow/status/rzl-app/ziggy/test.yml?branch=main&style=flat)](https://github.com/rzl-app/ziggy/actions?query=workflow:Tests+branch:main)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/rzl-app/ziggy.svg?style=flat)](https://packagist.org/packages/rzl-app/ziggy)
 [![Downloads on Packagist](https://img.shields.io/packagist/dt/rzl-app/ziggy.svg?style=flat)](https://packagist.org/packages/rzl-app/ziggy)
-[![Latest Version on NPM](https://img.shields.io/npm/v/rzl-ziggy-js.svg?style=flat)](https://npmjs.com/package/rzl-ziggy-js)
-[![Downloads on NPM](https://img.shields.io/npm/dt/rzl-ziggy-js.svg?style=flat)](https://npmjs.com/package/rzl-ziggy-js)
+[![Latest Version on NPM](https://img.shields.io/npm/v/rzl-app-ziggy.svg?style=flat)](https://npmjs.com/package/rzl-app-ziggy)
+[![Downloads on NPM](https://img.shields.io/npm/dt/rzl-app-ziggy.svg?style=flat)](https://npmjs.com/package/rzl-app-ziggy)
 
 Rzl Ziggy – provides a JavaScript `route()` function that works like Laravel's, making it a breeze to use your named Laravel routes in JavaScript, with customize extra attribute and configs stub file.
 
@@ -34,6 +34,12 @@ Install Rzl Ziggy in your Laravel app with Composer:
 
 ```bash
 composer require rzl-app/ziggy
+```
+
+Install Rzl Ziggy in your code base Front-end or SPA with NPM:
+
+```bash
+npm i rzl-app-ziggy
 ```
 
 Add the `@rzlRoutes` Blade directive to your main layout (_before_ your application's JavaScript), and the `route()` helper function will be available globally!
@@ -268,7 +274,7 @@ php artisan rzl-ziggy:generate --types
 To make your IDE aware that Ziggy's `route()` helper is available globally, and to type it correctly, add a declaration like this in a `.d.ts` file somewhere in your project:
 
 ```ts
-import { route as routeFn } from 'rzl-ziggy';
+import { route as routeFn } from 'rzl-app-ziggy';
 
 declare global {
     var route: typeof routeFn;
@@ -281,7 +287,7 @@ If you don't have Rzl Ziggy's NPM package installed, add the following to your `
 {
     "compilerOptions": {
         "paths": {
-            "rzl-ziggy": ["./vendor/rzl-app/ziggy"]
+            "rzl-app-ziggy": ["./vendor/rzl-app/ziggy"]
         }
     }
 }
@@ -354,7 +360,7 @@ To simplify importing the `route()` function, you can create an alias to the ven
 export default defineConfig({
     resolve: {
         alias: {
-            'rzl-ziggy': path.resolve('vendor/rzl-app/ziggy'),
+            'rzl-app-ziggy': path.resolve('vendor/rzl-app/ziggy'),
         },
     },
 });
@@ -363,7 +369,7 @@ export default defineConfig({
 Now your imports can be shortened to:
 
 ```js
-import { route } from 'rzl-ziggy';
+import { route } from 'rzl-app-ziggy';
 ```
 
 ### Vue
@@ -372,7 +378,7 @@ Ziggy includes a Vue plugin to make it easy to use the `route()` helper througho
 
 ```js
 import { createApp } from 'vue';
-import { ZiggyVue } from 'rzl-ziggy';
+import { ZiggyVue } from 'rzl-app-ziggy';
 import App from './App.vue';
 
 createApp(App).use(ZiggyVue);
@@ -398,7 +404,7 @@ If you are not using the `@rzlRoutes` Blade directive, import Ziggy's configurat
 
 ```js
 import { createApp } from 'vue';
-import { ZiggyVue } from 'rzl-ziggy';
+import { ZiggyVue } from 'rzl-app-ziggy';
 import { appRoutes } from './routes/index.js';
 import App from './App.vue';
 
@@ -421,7 +427,7 @@ Ziggy includes a `useRoute()` hook to make it easy to use the `route()` helper i
 
 ```jsx
 import React from 'react';
-import { useRoute } from 'rzl-ziggy';
+import { useRoute } from 'rzl-app-ziggy';
 
 export default function PostsLink() {
     const route = useRoute();
@@ -434,7 +440,7 @@ If you are not using the `@rzlRoutes` Blade directive, import Ziggy's configurat
 
 ```jsx
 import React from 'react';
-import { useRoute } from 'rzl-ziggy';
+import { useRoute } from 'rzl-app-ziggy';
 import { appRoutes } from './routes/index.js';
 
 export default function PostsLink() {
@@ -454,7 +460,7 @@ globalThis.appRoutes = appRoutes;
 
 ### SPAs or separate repos
 
-Ziggy's `route()` function is available as an NPM package, for use in JavaScript projects managed separately from their Laravel backend (i.e. without Composer or a `vendor` directory). You can install the NPM package with `npm install rzl-ziggy`.
+Ziggy's `route()` function is available as an NPM package, for use in JavaScript projects managed separately from their Laravel backend (i.e. without Composer or a `vendor` directory). You can install the NPM package with `npm install rzl-app-ziggy`.
 
 To make your routes available on the frontend for this function to use, you can either run `php artisan rzl-ziggy:generate` and add the generated config file to your frontend project, or you can return Rzl Ziggy's config as JSON from an endpoint in your Laravel API (see [Retrieving Ziggy's config from an API endpoint](#retrieving-ziggys-config-from-an-api-endpoint) below for an example of how to set this up).
 

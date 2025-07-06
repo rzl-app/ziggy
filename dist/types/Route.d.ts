@@ -57,7 +57,7 @@ export default class Route {
     }): false | {
         params: {
             [key: string]: string;
-        };
+        } | undefined;
         query: import("qs").ParsedQs;
     };
     /** -----------------------------------------------

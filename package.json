@@ -56,7 +56,7 @@
     "regex": "^_(?!query)"
   },
   "module": "./dist/index.esm.js",
-  "name": "rzl-ziggy-js",
+  "name": "rzl-app-ziggy",
   "prettier": {
     "printWidth": 100,
     "singleQuote": true,
@@ -73,7 +73,7 @@
     "build:types": "tsc -p tsconfig.build.json",
     "build:npm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --generateTypes",
     "format": "prettier . --write",
-    "prepublishOnly": "rm -r ./dist/* && npm run build:npm",
+    "prepublishOnly": "rm -r ./dist/* && npm run build:types && npm run build:npm",
     "test": "vitest --typecheck"
   },
   "source": "./src/ts/index.ts",
