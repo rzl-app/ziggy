@@ -1,1 +1,1 @@
-export { route as default } from './index';
+export { route as default } from "./index";

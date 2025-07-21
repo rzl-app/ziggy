@@ -7,7 +7,6 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Octane\Events\RequestReceived;
 use Illuminate\View\Compilers\BladeCompiler;
 
-
 class ZiggyServiceProvider extends ServiceProvider
 {
   public function register()

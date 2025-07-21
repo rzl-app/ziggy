@@ -1,19 +1,14 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "outDir": "./dist/types",
     "declaration": true,
     "emitDeclarationOnly": true,
-    "outDir": "./dist/types",
-    "moduleResolution": "Bundler",
-    "module": "ESNext",
-    "target": "ESNext",
-    "strict": true
   },
-  "include": [
-    "src/ts"
-  ],
-  "exclude": [
-    "vendor",
-    "tests/fixtures"
+  "files": [
+    "src/ts/browser.ts",
+    "src/ts/index.ts",
+    "src/ts/types.ts",
+    "src/ts/global.d.ts"
   ]
 }

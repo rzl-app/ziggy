@@ -7,10 +7,8 @@ use RzlApp\Ziggy\Ziggy;
 
 class File implements Stringable
 {
-
   public function __construct(protected Ziggy|string $ziggy, private $ext)
   {
-    $this->ext = $ext;
     if (config("rzl-ziggy.output.encrypting", true)) {
       $this->ziggy = encryptCryptPayload(json_encode($ziggy, JSON_UNESCAPED_SLASHES));
     } else {

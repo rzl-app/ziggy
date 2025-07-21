@@ -177,7 +177,7 @@ route().current('events.*');     // true
 route().current('events.show');  // false
 ```
 
-`route().current()` optionally accepts parameters as its second argument, and will check that their values also match in the current URL:
+`route().current(...)` optionally accepts parameters as its second argument, and will check that their values also match in the current URL:
 
 ```js
 // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
@@ -189,7 +189,7 @@ route().current('venues.events.show', { hosts: 'all' });       // true
 route().current('venues.events.show', { venue: 6 });           // false
 ```
 
-#### Check if a route exists: `route().has()`
+#### Check if a route exists: `route().has(...)`
 
 ```js
 // Laravel app has only one named route, 'home'
@@ -208,6 +208,28 @@ route().params; // { venue: '1', event: '2', hosts: 'all' }
 ```
 
 > Note: parameter values retrieved with `route().params` will always be returned as strings.
+
+#### Retrieve only params route in laravel route (except query search params) in the current route: `route().routeParams`
+
+```js
+// Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
+// Current window URL is https://myapp.com/venues/1/events/2?hosts=all&type=test
+
+route().routeParams; // { venue: '1', event: '2' }
+```
+
+> Note: parameter values retrieved with `route().routeParams` will always be returned as strings.
+
+#### Retrieve all search query params only (except params route in laravel route) in the current route: `route().queryParams`
+
+```js
+// Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
+// Current window URL is https://myapp.com/venues/1/events/2?hosts=all&type=test
+
+route().queryParams; // { hosts: 'all', type: 'test' }
+```
+
+> Note: parameter values retrieved with `route().queryParams` will always be returned as strings.
 
 ### Route-model binding
 
@@ -515,7 +537,7 @@ Then, you can expose a specific group by passing the group name into the `@rzlRo
 ```blade
 {{-- authors.blade.php --}}
 
-@routes('author')
+@rzlRoutes('author')
 ```
 
 To expose multiple groups you can pass an array of group names:
@@ -523,7 +545,7 @@ To expose multiple groups you can pass an array of group names:
 ```blade
 {{-- admin.blade.php --}}
 
-@routes(['admin', 'author'])
+@rzlRoutes(['admin', 'author'])
 ```
 
 > Note: Passing group names to the `@rzlRoutes` directive will always take precedence over your other `only` or `except` settings.
@@ -541,7 +563,7 @@ If your application is using [TLS/SSL termination](https://en.wikipedia.org/wiki
 A [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) (CSP) may block inline scripts, including those output by Ziggy's `@rzlRoutes` Blade directive. If you have a CSP and are using a nonce to flag safe inline scripts, you can pass the nonce to the `@rzlRoutes` directive and it will be added to Ziggy's script tag:
 
 ```php
-@routes(nonce: 'your-nonce-here')
+@rzlRoutes(nonce: 'your-nonce-here')
 ```
 
 ### Disabling the `route()` helper

@@ -1,9 +1,17 @@
 {
   "compilerOptions": {
+    "strict": true,
+    "alwaysStrict": true,
     "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "target": "ESNext"
+    "target": "ESNext",
+    "moduleResolution": "Bundler"
   },
+  "include": [
+    "src/ts/browser.ts",
+    "src/ts/index.ts",
+    "src/ts/types.ts",
+    "src/ts/global.d.ts"
+  ],
   "exclude": [
     "vendor",
     "tests/fixtures"

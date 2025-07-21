@@ -24,6 +24,7 @@
   },
   "description": "Use your Laravel named routes in JavaScript or TypeScript.",
   "devDependencies": {
+    "glob": "^11.0.3",
     "jsdom": "^26.1.0",
     "microbundle": "^0.15.1",
     "prettier": "^3.5.3",
@@ -35,9 +36,12 @@
     "types": "./dist/types/index.d.ts"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE.md"
   ],
-  "homepage": "https://github.com/rzl-app/ziggy",
+  "homepage": "https://github.com/rzl-app/ziggy#readme",
+  "jsdelivr": "./dist/route.umd.js",
   "keywords": [
     "laravel",
     "routes",
@@ -52,32 +56,40 @@
     "ziggy js"
   ],
   "license": "MIT",
+  "main": "./dist/index.js",
   "mangle": {
     "regex": "^_(?!query)"
   },
   "module": "./dist/index.esm.js",
   "name": "rzl-app-ziggy",
   "prettier": {
-    "printWidth": 100,
-    "singleQuote": true,
-    "tabWidth": 2
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": false,
+    "tabWidth": 2,
+    "trailingComma": "none"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rzl-app/ziggy.git"
   },
   "scripts": {
-    "build": "npm run build:esm && npm run build:umd && npm run build:types",
-    "build:esm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --external none",
-    "build:umd": "microbundle -i ./src/ts/browser.ts -o ./dist/route.js --format umd --name route --no-sourcemap --external none",
-    "build:types": "tsc -p tsconfig.build.json",
-    "build:npm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --generateTypes",
+    "build": "npm run removeDirDist && npm run build:esm && npm run build:umd && npm run build:types",
+    "build:esm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --no-generateTypes --external none",
+    "build:npm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --no-generateTypes",
+    "build:types": "tsc -p tsconfig.build.json && npm run removeUnUsedDTSDirDist",
+    "build:umd": "microbundle -i ./src/ts/browser.ts -o ./dist/route.js --format umd --name route --no-sourcemap --no-generateTypes --external none",
+    "check-publish": "npm pack --dry-run",
     "format": "prettier . --write",
-    "prepublishOnly": "rm -r ./dist/* && npm run build:types && npm run build:npm",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run removeDirDist && npm run build:npm && npm run build:types",
+    "release-patch": "npm version patch && git push && git push --tags && npm publish",
+    "removeDirDist": "rm -rf ./dist/* || true",
+    "removeUnUsedDTSDirDist": "node ./src/ts/scripts/clean-dts.mjs",
     "test": "vitest --typecheck"
   },
-  "source": "./src/ts/index.ts",
   "type": "module",
   "types": "./dist/types/index.d.ts",
+  "unpkg": "./dist/route.umd.js",
   "version": "1.0.3"
 }
