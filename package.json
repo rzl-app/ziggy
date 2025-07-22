@@ -37,23 +37,23 @@
   "sideEffects": false,
   "exports": {
     "./vite-plugin/build": {
-      "default": "./dist/build.js",
-      "types": "./dist/build.d.ts"
+      "default": "./dist/vite-plugin/build.js",
+      "types": "./dist/vite-plugin/build.d.ts"
     },
     "./vite-plugin/config": {
-      "default": "./dist/config.js",
-      "types": "./dist/config.d.ts"
+      "default": "./dist/vite-plugin/config.js",
+      "types": "./dist/vite-plugin/config.d.ts"
     },
     "./vite-plugin/utils": {
-      "default": "./dist/utils.js",
-      "types": "./dist/utils.d.ts"
+      "default": "./dist/vite-plugin/utils.js",
+      "types": "./dist/vite-plugin/utils.d.ts"
     },
     "./vite-plugin/routes": {
       "types": "./dist/vite-plugin/routes.d.ts"
     },
     "./vite-plugin": {
-      "default": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "default": "./dist/vite-plugin/index.js",
+      "types": "./dist/vite-plugin/index.d.ts"
     },
     ".": {
       "types": "./dist/index.d.ts",
