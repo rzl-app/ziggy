@@ -532,6 +532,42 @@ return [
 ];
 ```
 
+### Using JavaScript or TypeScript
+
+You can also format your front-end using JavaScript or TypeScript when running the Artisan commands `php artisan rzl-ziggy:generate` or `php artisan rzl-ziggy:generate --types`:
+
+```php
+// config/rzl-ziggy.php
+
+return [
+    /**
+     * Using JavaScript or TypeScript?
+     *
+     * Default "ts" # ts = TypeScript (.ts) and js = JavaScript (.js)
+     * todo: Note: If lang value is invalid or empty, will force to ts (.ts)!
+     */
+    "lang" => "ts",
+];
+```
+
+### Output Path Generate
+
+You can also set the output location when running the Artisan command `php artisan rzl-ziggy:generate` or `php artisan rzl-ziggy:generate --types`:
+
+```php
+// config/rzl-ziggy.php
+
+return [
+    "output" => [ 
+      // Path Folder Generated
+      "path" => [
+          // Path Folder Generated of Main file (.js|.ts)
+          "main" => "resources/routes/index.ts",
+      ]
+    ],
+];
+```
+
 Then, you can expose a specific group by passing the group name into the `@rzlRoutes` Blade directive:
 
 ```blade
@@ -570,16 +606,16 @@ A [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CS
 
 If you only want to use the `@rzlRoutes` directive to make Ziggy's configuration available in JavaScript, but don't need the `route()` helper function, set the `rzl-ziggy.skip-route-function` config to `true`.
 
-### Retrieving Ziggy's config from an API endpoint
+### Retrieving Rzl Ziggy's config from an API endpoint
 
-If you need to retrieve Ziggy's config from your Laravel backend over the network, you can create a route that looks something like this:
+If you need to retrieve Rzl Ziggy's config from your Laravel backend over the network, you can create a route that looks something like this:
 
 ```php
 // routes/api.php
 
-use RzlApp\Ziggy\Ziggy;
+use RzlApp\Ziggy\RzlZiggy;
 
-Route::get('ziggy', fn () => response()->json(new Ziggy));
+Route::get('rzl-ziggy', fn () => response()->json(new RzlZiggy));
 ```
 
 ### Re-generating the routes file when your app routes change

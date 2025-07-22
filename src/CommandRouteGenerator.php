@@ -2,12 +2,12 @@
 
 namespace RzlApp\Ziggy;
 
-use RzlApp\Ziggy\Ziggy;
 use Illuminate\Support\Str;
 use RzlApp\Ziggy\Output\File;
 use RzlApp\Ziggy\Output\Types;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use RzlApp\Ziggy\Helpers\RzlZiggyHelper;
 
 class CommandRouteGenerator extends Command
 {
@@ -29,7 +29,7 @@ class CommandRouteGenerator extends Command
 
   public function handle()
   {
-    $ziggy = new Ziggy($this->option("group"), $this->option("url") ? url($this->option("url")) : null);
+    $ziggy = new RzlZiggy($this->option("group"), $this->option("url") ? url($this->option("url")) : null);
 
     $scriptLanguage = $this->option("lang") ?? config("rzl-ziggy.lang");
     if (!in_array($scriptLanguage, ["ts", "js"])) {
@@ -73,10 +73,10 @@ class CommandRouteGenerator extends Command
 
       $this->files->put(base_path(Str::replaceLast("$nameFile.$scriptLanguage", "types.d.ts", $pathTypes)), new $types($ziggy));
 
-      $this->info("File types as (.d.ts) generated => [" . base_path(getPathFile(Str::replaceLast("$nameFile.$scriptLanguage", "types.d.ts", $pathTypes), true, true)) . "]");
+      $this->info("File types as (.d.ts) generated => [" . base_path(RzlZiggyHelper::getPathFile(Str::replaceLast("$nameFile.$scriptLanguage", "types.d.ts", $pathTypes), true, true)) . "]");
     }
 
-    $this->info("File main file routes (.$scriptLanguage) generated => [" . base_path(getPathFile($path, true, true)) . "]");
+    $this->info("File main file routes (.$scriptLanguage) generated => [" . base_path(RzlZiggyHelper::getPathFile($path, true, true)) . "]");
   }
 
   /** @param string $path */

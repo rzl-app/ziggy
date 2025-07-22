@@ -2,8 +2,9 @@
 
 namespace RzlApp\Ziggy;
 
-use RzlApp\Ziggy\Output\MergeScript;
+use RzlApp\Ziggy\Helpers\RzlZiggyHelper;
 use RzlApp\Ziggy\Output\Script;
+use RzlApp\Ziggy\Output\MergeScript;
 
 class BladeRouteGenerator
 {
@@ -11,14 +12,29 @@ class BladeRouteGenerator
 
   public function generate($group = null, $id = null, $name = null, $nonce = null, $dataAttribute = [], $ignoreMinify = true)
   {
-    $ziggy = new Ziggy($group);
+    $ziggy = new RzlZiggy($group);
 
-    $id = $id ? ' id="' . $id . '"' : '';
-    $name = $name ? ' name="' . $name . '"' : '';
-    $nonce = $nonce ? ' nonce="' . $nonce . '"' : '';
+    $id = RzlZiggyHelper::formattingAttribute("id", $id);
+    $name = RzlZiggyHelper::formattingAttribute("name", $name);
+    $nonce = RzlZiggyHelper::formattingAttribute("nonce", $nonce);
     $ignoreMinify = $ignoreMinify ? ' ignore--minify' : '';
 
-    $dataAttributes = count($dataAttribute) > 0 ? ' data="' . collect($dataAttribute)->implode(" ") . '"' : '';
+    // $dataAttributes = count($dataAttribute) > 0 ? ' data="' . collect($dataAttribute)->implode(" ") . '"' : '';
+    $dataAttributes = ($joined = collect($dataAttribute ?? [])
+      ->map(function ($v, $k) {
+        $k = trim($k, "\"' \t\n\r\0\v\x0B");
+
+        if (!preg_match('/^[a-zA-Z0-9_\-]+$/', $k)) {
+          return null;
+        }
+
+        $key = e(str($k)->trim());
+        $value = e(str($v)->trim());
+
+        return $value !== '' ? "data-{$key}=\"{$value}\"" : null;
+      })
+      ->filter()
+      ->implode(' ')) !== '' ? ' ' . $joined : '';
 
     if (static::$generated) {
       return (string) $this->generateMergeJavascript($ziggy, $id, $name, $nonce, $dataAttributes, $ignoreMinify);
@@ -33,7 +49,7 @@ class BladeRouteGenerator
     return (string) new $output($ziggy, $function, $id, $name, $nonce, $dataAttributes, $ignoreMinify);
   }
 
-  private function generateMergeJavascript(Ziggy $ziggy, $id, $name, $nonce, $dataAttributes, $ignoreMinify)
+  private function generateMergeJavascript(RzlZiggy $ziggy, $id, $name, $nonce, $dataAttributes, $ignoreMinify)
   {
     $output = config('rzl-ziggy.output.merge_script', MergeScript::class);
 

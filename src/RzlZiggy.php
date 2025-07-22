@@ -2,22 +2,22 @@
 
 namespace RzlApp\Ziggy;
 
-use Illuminate\Contracts\Routing\UrlRoutable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Reflector;
-use Illuminate\Support\Str;
-use JsonSerializable;
-use Laravel\Folio\FolioManager;
-use Laravel\Folio\FolioRoutes;
-use Laravel\Folio\Pipeline\MatchedView;
-use Laravel\Folio\Pipeline\PotentiallyBindablePathSegment;
 use ReflectionClass;
+use JsonSerializable;
 use ReflectionMethod;
 use ReflectionProperty;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Laravel\Folio\FolioRoutes;
+use Laravel\Folio\FolioManager;
+use Illuminate\Support\Reflector;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Laravel\Folio\Pipeline\MatchedView;
+use Illuminate\Contracts\Routing\UrlRoutable;
+use Laravel\Folio\Pipeline\PotentiallyBindablePathSegment;
 
-class Ziggy implements JsonSerializable
+class RzlZiggy implements JsonSerializable
 {
 
   protected Collection $routes;

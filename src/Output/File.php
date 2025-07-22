@@ -3,14 +3,15 @@
 namespace RzlApp\Ziggy\Output;
 
 use Stringable;
-use RzlApp\Ziggy\Ziggy;
+use RzlApp\Ziggy\RzlZiggy;
+use RzlApp\Ziggy\Helpers\RzlZiggyHelper;
 
 class File implements Stringable
 {
-  public function __construct(protected Ziggy|string $ziggy, private $ext)
+  public function __construct(protected RzlZiggy|string $ziggy, private $ext)
   {
     if (config("rzl-ziggy.output.encrypting", true)) {
-      $this->ziggy = encryptCryptPayload(json_encode($ziggy, JSON_UNESCAPED_SLASHES));
+      $this->ziggy = RzlZiggyHelper::encryptCryptPayload(json_encode($ziggy, JSON_UNESCAPED_SLASHES));
     } else {
       $this->ziggy = json_encode($ziggy, JSON_UNESCAPED_SLASHES);
     }
@@ -42,6 +43,7 @@ class File implements Stringable
     JAVASCRIPT;
   }
 
+  /** @deprecated Use `toString()` instead. */
   public function OlderToString(): string
   {
     return <<<JAVASCRIPT

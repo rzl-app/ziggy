@@ -3,14 +3,14 @@
 namespace RzlApp\Ziggy\Output;
 
 use Stringable;
-use RzlApp\Ziggy\Ziggy;
+use RzlApp\Ziggy\RzlZiggy;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
 class Types implements Stringable
 {
-  public function __construct(protected Ziggy $ziggy) {}
+  public function __construct(protected RzlZiggy $ziggy) {}
 
   public function __toString(): string
   {

@@ -4,16 +4,21 @@
     "alwaysStrict": true,
     "module": "ESNext",
     "target": "ESNext",
-    "moduleResolution": "Bundler"
+    "outDir": "./dist",
+    "moduleResolution": "bundler"
   },
   "include": [
     "src/ts/browser.ts",
     "src/ts/index.ts",
     "src/ts/types.ts",
-    "src/ts/global.d.ts"
+    "src/ts/global.ts"
   ],
   "exclude": [
     "vendor",
+    "node_modules",
+    "dist",
+    "test",
+    "**/*.test.ts",
     "tests/fixtures"
   ]
 }
