@@ -36,11 +36,24 @@
   },
   "sideEffects": false,
   "exports": {
+    "./vite-plugin/build": {
+      "default": "./dist/build.js",
+      "types": "./dist/build.d.ts"
+    },
+    "./vite-plugin/config": {
+      "default": "./dist/config.js",
+      "types": "./dist/config.d.ts"
+    },
+    "./vite-plugin/utils": {
+      "default": "./dist/utils.js",
+      "types": "./dist/utils.d.ts"
+    },
+    "./vite-plugin/routes": {
+      "types": "./dist/vite-plugin/routes.d.ts"
+    },
     "./vite-plugin": {
-      "types": "./dist/vite-plugin/index.d.ts",
-      "import": "./dist/vite-plugin/index.js",
-      "require": "./dist/vite-plugin/index.cjs",
-      "default": "./dist/vite-plugin/index.js"
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     ".": {
       "types": "./dist/index.d.ts",
@@ -98,7 +111,8 @@
   "scripts": {
     "start": "vite",
     "build": "npm run removeDirDist && npm run build:esm && npm run build:umd && npm run build:types",
-    "build:vite-plugin": "npm run removeDirDist:vite-plugin && microbundle -i ./src/ts/vite-plugin/index.ts -o ./dist/vite-plugin/index.js --format modern,esm,cjs --no-sourcemap --no-generateTypes && npm run build:vite-plugin-types",
+    "build:vite-plugin": "npm run removeDirDist:vite-plugin && tsc -p tsconfig.vite-plugin.json",
+    "build:vite-plugin-bug": "npm run removeDirDist:vite-plugin && microbundle -i ./src/ts/vite-plugin/index.ts -o ./dist/vite-plugin/index.js --format modern,esm,cjs --no-sourcemap --no-generateTypes && npm run build:vite-plugin-types",
     "build:vite-plugin-types": "dts-bundle-generator --config dts-config-vite-plugin.cjs --silent",
     "build:esm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --no-generateTypes --external none",
     "build:npm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --no-generateTypes",
