@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "NodeNext",
+    "target": "esnext",
     "outDir": "./dist/vite-plugin",
-    "moduleResolution": "NodeNext",
+    "module": "esnext",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "strict": true,
     "declaration": true,
+    "emitDeclarationOnly": false,
     "esModuleInterop": true,
     "skipLibCheck": true
   },
   "include": [
-    "./src/ts/vite-plugin"
+    // "./src/ts/vite-plugin"
   ]
 }
