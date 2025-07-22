@@ -97,7 +97,7 @@
   },
   "scripts": {
     "build": "npm run removeDirDist && npm run build:esm && npm run build:umd && npm run build:types",
-    "build:vite-plugin": "npm run removeDirDist:vite-plugin && microbundle -i ./src/ts/vite-plugin/index.ts -o ./dist/vite-plugin/index.js --format esm,cjs --no-sourcemap --no-generateTypes && npm run build:vite-plugin-types",
+    "build:vite-plugin": "npm run removeDirDist:vite-plugin && microbundle -i ./src/ts/vite-plugin/index.ts -o ./dist/vite-plugin/index.js --format modern,esm,cjs --no-sourcemap --no-generateTypes && npm run build:vite-plugin-types",
     "build:vite-plugin-types": "dts-bundle-generator --config dts-config-vite-plugin.cjs --silent",
     "build:esm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --no-generateTypes --external none",
     "build:npm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --no-generateTypes",
