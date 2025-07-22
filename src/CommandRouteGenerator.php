@@ -29,6 +29,8 @@ class CommandRouteGenerator extends Command
 
   public function handle()
   {
+    $this->alert("Starting to generating at rzl-ziggy, please wait a sec, instans generating...");
+
     $ziggy = new RzlZiggy($this->option("group"), $this->option("url") ? url($this->option("url")) : null);
 
     $scriptLanguage = $this->option("lang") ?? config("rzl-ziggy.lang");
@@ -55,7 +57,6 @@ class CommandRouteGenerator extends Command
     $this->makeDirectory(
       $pathTypes = str(
         $this->argument("path") ??
-          // config("rzl-ziggy.output.path.types", "resources/routes/types.$scriptLanguage")
           config("rzl-ziggy.output.path.main", "resources/routes/types.$scriptLanguage")
       )->replaceLast($extFile, $scriptLanguage)->toString()
     );
@@ -74,16 +75,33 @@ class CommandRouteGenerator extends Command
       $this->files->put(base_path(Str::replaceLast("$nameFile.$scriptLanguage", "types.d.ts", $pathTypes)), new $types($ziggy));
 
       $this->info("File types as (.d.ts) generated => [" . base_path(RzlZiggyHelper::getPathFile(Str::replaceLast("$nameFile.$scriptLanguage", "types.d.ts", $pathTypes), true, true)) . "]");
+
+      if ($this->option("types-only")) {
+
+        return self::SUCCESS;
+      }
     }
 
     $this->info("File main file routes (.$scriptLanguage) generated => [" . base_path(RzlZiggyHelper::getPathFile($path, true, true)) . "]");
+
+    return self::SUCCESS;
   }
 
   /** @param string $path */
   protected function makeDirectory($path)
   {
-    if (!$this->files->isDirectory(dirname(base_path($path)))) {
-      $this->files->makeDirectory(dirname(base_path($path)), 0755, true, true);
+    $pathFolder = RzlZiggyHelper::getPathFile(
+      dirname(base_path($path)),
+      true,
+      true
+    );
+
+    if (!$this->files->isDirectory($pathFolder)) {
+      $this->info("Make folder file at [{$pathFolder}]");
+
+      $this->line("");
+
+      $this->files->makeDirectory($pathFolder, 0755, true, true);
     }
 
     return $path;
