@@ -119,5 +119,5 @@
   "type": "module",
   "types": "./dist/index.d.ts",
   "unpkg": "./dist/route.umd.js",
-  "version": "1.0.17"
+  "version": "1.0.18"
 }
