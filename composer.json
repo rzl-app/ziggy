@@ -54,7 +54,6 @@
     "rzl ziggy"
   ],
   "license": "MIT",
-  "minimum-stability": "dev",
   "name": "rzl-app/ziggy",
   "prefer-stable": true,
   "require": {
