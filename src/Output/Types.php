@@ -18,7 +18,7 @@ class Types implements Stringable
 
     return <<<JAVASCRIPT
       /** -----------------------------------------------
-       * *** Generates types of routes of app based on Laravel route names. ***
+       * * ***Generates types of routes of app based on Laravel route names.***
        * -----------------------------------------------
        *
        * This module declaration exposes Laravel route definitions
