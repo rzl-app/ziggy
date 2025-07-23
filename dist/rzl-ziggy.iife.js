@@ -1,5 +1,5 @@
 /*!
- * rzl-app-ziggy v1.0.23
+ * rzl-app-ziggy v1.0.24
  * Typed Laravel route generator for any frontend — works with React, Vue, Vanilla JS, and other JavaScript-based stacks.
  * Repository: https://github.com/rzl-app/ziggy
  * Based on ziggy-js by Tighten Co. (https://github.com/tighten/ziggy)

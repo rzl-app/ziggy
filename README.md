@@ -71,7 +71,7 @@ Route::get('posts', fn (Request $request) => /* ... */)->name('posts.index');
 ```
 
 ```js
-route('posts.index'); // 'https://ziggy.test/posts'
+route('posts.index'); // 'https://rzl.test/posts'
 ```
 
 #### Parameters
@@ -81,9 +81,9 @@ Route::get('posts/{post}', fn (Post $post) => /* ... */)->name('posts.show');
 ```
 
 ```js
-route('posts.show', 1);           // 'https://ziggy.test/posts/1'
-route('posts.show', [1]);         // 'https://ziggy.test/posts/1'
-route('posts.show', { post: 1 }); // 'https://ziggy.test/posts/1'
+route('posts.show', 1);           // 'https://rzl.test/posts/1'
+route('posts.show', [1]);         // 'https://rzl.test/posts/1'
+route('posts.show', { post: 1 }); // 'https://rzl.test/posts/1'
 ```
 
 #### Multiple parameters
@@ -94,8 +94,8 @@ Route::get('venues/{venue}/events/{event}', fn (Venue $venue, Event $event) => /
 ```
 
 ```js
-route('venues.events.show', [1, 2]);                 // 'https://ziggy.test/venues/1/events/2'
-route('venues.events.show', { venue: 1, event: 2 }); // 'https://ziggy.test/venues/1/events/2'
+route('venues.events.show', [1, 2]);                 // 'https://rzl.test/venues/1/events/2'
+route('venues.events.show', { venue: 1, event: 2 }); // 'https://rzl.test/venues/1/events/2'
 ```
 
 #### Query parameters
@@ -114,7 +114,7 @@ route('venues.events.show', {
     page: 5,
     count: 10,
 });
-// 'https://ziggy.test/venues/1/events/2?page=5&count=10'
+// 'https://rzl.test/venues/1/events/2?page=5&count=10'
 ```
 
 If you need to pass a query parameter with the same name as a route parameter, nest it under the special `_query` key:
@@ -128,7 +128,7 @@ route('venues.events.show', {
         page: 5,
     },
 });
-// 'https://ziggy.test/venues/1/events/2?event=3&page=5'
+// 'https://rzl.test/venues/1/events/2?event=3&page=5'
 ```
 
 Like Laravel, Rzl Ziggy automatically encodes boolean query parameters as integers in the query string:
@@ -142,7 +142,7 @@ route('venues.events.show', {
         overdue: true,
     },
 });
-// 'https://ziggy.test/venues/1/events/2?draft=0&overdue=1'
+// 'https://rzl.test/venues/1/events/2?draft=0&overdue=1'
 ```
 
 #### Default parameter values
@@ -160,7 +160,7 @@ URL::defaults(['locale' => $request->user()->locale ?? 'de']);
 ```
 
 ```js
-route('posts.show', 1); // 'https://ziggy.test/de/posts/1'
+route('posts.show', 1); // 'https://rzl.test/de/posts/1'
 ```
 
 #### Examples
@@ -181,7 +181,7 @@ Calling Rzl Ziggy's `route()` function with no arguments will return an instance
 
 ```js
 // Laravel route called 'events.index' with URI '/events'
-// Current window URL is https://ziggy.test/events
+// Current window URL is https://rzl.test/events
 
 route().current();               // 'events.index'
 route().current('events.index'); // true
@@ -245,7 +245,7 @@ route().queryParams; // { hosts: 'all', type: 'test' }
 
 ### Route-model binding
 
-Rzl Ziggy supports Laravel's [route-model binding](https://laravel.com/docs/routing#route-model-binding), and can even recognize custom route key names. If you pass `route()` a JavaScript object as a route parameter, Ziggy will use the registered route-model binding keys for that route to find the correct parameter value inside the object. If no route-model binding keys are explicitly registered for a parameter, Ziggy will use the object's `id` key.
+Rzl Ziggy supports Laravel's [route-model binding](https://laravel.com/docs/routing#route-model-binding), and can even recognize custom route key names. If you pass `route()` a JavaScript object as a route parameter, Ziggy will use the registered route-model binding keys for that route to find the correct parameter value inside the object. If no route-model binding keys are explicitly registered for a parameter, Rzl Ziggy will use the object's `id` key.
 
 ```php
 // app/Models/Post.php
@@ -275,7 +275,7 @@ const post = {
 
 // Rzl Ziggy knows that this route uses the 'slug' route-model binding key:
 
-route('posts.show', post); // 'https://ziggy.test/blog/introducing-ziggy-v1'
+route('posts.show', post); // 'https://rzl.test/blog/introducing-ziggy-v1'
 ```
 
 Rzl Ziggy also supports [custom keys](https://laravel.com/docs/routing#customizing-the-key) for scoped bindings declared directly in a route definition:
@@ -291,8 +291,8 @@ const photo = {
     filename: 'sunset.jpg',
 }
 
-route('authors.photos.show', [{ id: 1, name: 'Ansel' }, photo]);
-// 'https://ziggy.test/authors/1/photos/714b19e8-ac5e-4dab-99ba-34dc6fdd24a5'
+route('authors.photos.show', [{ id: 1, name: 'John' }, photo]);
+// 'https://rzl.test/authors/1/photos/714b19e8-ac5e-4dab-99ba-34dc6fdd24a5'
 ```
 
 ### TypeScript
@@ -350,14 +350,15 @@ The file `rzl-ziggy:generate` creates looks something like this:
 // resources/routes/index.{ts|js}
 
 /** ---------------------------------
-  * * ***Data Generates Routes of App Based-on Laravel Routes Name.***
+  * * ***Generates files/routes of app based on Laravel route names.***
   * ---------------------------------
   *
-  * @return  string
-  *
+  * **This behaves similarly to `rzl-ziggy:generate`.**
+  * 
+  * _* **TypeScript (TS) Mode.**_
   */
-export const appRoutes = {
-    url: 'https://ziggy.test',
+export const appRoutes: string = {
+    url: 'https://rzl.test',
     port: null,
     routes: {
         home: {

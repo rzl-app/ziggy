@@ -11,34 +11,37 @@ class File implements Stringable
   public function __construct(protected RzlZiggy|string $ziggy, private $ext)
   {
     if (config("rzl-ziggy.output.encrypting", true)) {
-      $this->ziggy = RzlZiggyHelper::encryptCryptPayload(json_encode($ziggy, JSON_UNESCAPED_SLASHES));
+      $this->ziggy = RzlZiggyHelper::encryptCryptPayload(json_encode($ziggy, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
     } else {
-      $this->ziggy = json_encode($ziggy, JSON_UNESCAPED_SLASHES);
+      $this->ziggy = json_encode($ziggy, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
   }
 
-  // const AppRoutes = "$this->ziggy";
   public function __toString(): string
   {
     if ($this->ext === "ts") {
       return <<<JAVASCRIPT
-        /* eslint-disable quotes */
         /** ---------------------------------
-        * * ***Data Generates Routes of App Based-on Laravel Routes Name.***
-        */
+          * * ***Generates files/routes of app based on Laravel route names.***
+          * ---------------------------------
+          *
+          * **This behaves similarly to `rzl-ziggy:generate`.**
+          * 
+          * _* **TypeScript (TS) Mode.**_
+          */
         export const appRoutes:string = '$this->ziggy';
         JAVASCRIPT;
     }
 
     return <<<JAVASCRIPT
-    /* eslint-disable quotes */
     /** ---------------------------------
-    * * ***Data Generates Routes of App Based-on Laravel Routes Name.***
-    * ---------------------------------
-    *
-    * @return  string
-    *
-    */
+      * * ***Generates files/routes of app based on Laravel route names.***
+      * ---------------------------------
+      *
+      * **This behaves similarly to `rzl-ziggy:generate`.**
+      * 
+      * _* **JavaScript (JS) Mode.**_
+      */
     export const appRoutes = '$this->ziggy';
     JAVASCRIPT;
   }
@@ -47,7 +50,7 @@ class File implements Stringable
   public function OlderToString(): string
   {
     return <<<JAVASCRIPT
-      const appRoutes = {$this->ziggy->toJson(128)};
+      const appRoutes = {$this->ziggy->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
 
       if (typeof window !== 'undefined' && typeof window.appRoutes !== 'undefined') {
         Object.assign(appRoutes.routes, window.appRoutes.routes);
