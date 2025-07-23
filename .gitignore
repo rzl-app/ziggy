@@ -3,6 +3,5 @@
 /src/js
 /src/ts/*.ts
 /src/ts/**/*.ts
-/src/ts
-/tools
+/src/ts 
 /deprecated

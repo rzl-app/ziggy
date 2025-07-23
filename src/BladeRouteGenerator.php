@@ -2,9 +2,9 @@
 
 namespace RzlApp\Ziggy;
 
-use RzlApp\Ziggy\Helpers\RzlZiggyHelper;
 use RzlApp\Ziggy\Output\Script;
 use RzlApp\Ziggy\Output\MergeScript;
+use RzlApp\Ziggy\Helpers\RzlZiggyHelper;
 
 class BladeRouteGenerator
 {
@@ -58,6 +58,6 @@ class BladeRouteGenerator
 
   private function getRouteFunction()
   {
-    return config('rzl-ziggy.skip-route-function') ? '' : file_get_contents(__DIR__ . '/../dist/route.umd.js');
+    return config('rzl-ziggy.skip-route-function') ? '' : file_get_contents(__DIR__ . '/../dist/rzl-ziggy.iife.js');
   }
 }

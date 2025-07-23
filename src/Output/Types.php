@@ -7,6 +7,7 @@ use RzlApp\Ziggy\RzlZiggy;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use RzlApp\Ziggy\Helpers\RzlZiggyHelper;
 
 class Types implements Stringable
 {
@@ -16,24 +17,15 @@ class Types implements Stringable
   {
     $routes = $this->routes();
 
+    $banner = RzlZiggyHelper::generateComposerBanner("ts-types");
+
     return <<<JAVASCRIPT
-      /** -----------------------------------------------
-       * * ***Generates types of routes of app based on Laravel route names.***
-       * -----------------------------------------------
-       *
-       * This module declaration exposes Laravel route definitions
-       * for use in TypeScript (TS) mode.
-       *
-       * **This behaves similarly to `rzl-ziggy:generate`.**
-       *
-       * @module rzl-app-ziggy
-       */
+      {$banner}
       declare module "rzl-app-ziggy" {
-        interface RouteList {
-          $routes->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES )
-        }
+        interface RouteList {$routes->toJson(JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)}
       }
       export {};
+
       JAVASCRIPT;
   }
 

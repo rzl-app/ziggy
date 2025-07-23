@@ -11,6 +11,7 @@
     "moduleResolution": "bundler",
   },
   "include": [
+    "src/ts/utils",
     "src/ts/ziggy",
     "src/ts/vite-plugin",
   ],

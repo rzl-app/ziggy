@@ -19,35 +19,24 @@ class File implements Stringable
 
   public function __toString(): string
   {
+    $banner = RzlZiggyHelper::generateComposerBanner("ts-files");
+
     if ($this->ext === "ts") {
       return <<<JAVASCRIPT
-        /** ---------------------------------
-          * * ***Generates files/routes of app based on Laravel route names.***
-          * ---------------------------------
-          *
-          * **This behaves similarly to `rzl-ziggy:generate`.**
-          * 
-          * _* **TypeScript (TS) Mode.**_
-          */
-        export const appRoutes:string = '$this->ziggy';
+        {$banner}
+        export const appRoutes: string = `$this->ziggy`;
         JAVASCRIPT;
     }
 
+    $banner = RzlZiggyHelper::generateComposerBanner("js-files");
     return <<<JAVASCRIPT
-    /** ---------------------------------
-      * * ***Generates files/routes of app based on Laravel route names.***
-      * ---------------------------------
-      *
-      * **This behaves similarly to `rzl-ziggy:generate`.**
-      * 
-      * _* **JavaScript (JS) Mode.**_
-      */
-    export const appRoutes = '$this->ziggy';
+    {$banner}
+    export const appRoutes = `$this->ziggy`;
     JAVASCRIPT;
   }
 
   /** @deprecated Use `toString()` instead. */
-  public function _toString(): string
+  public function _toString_(): string
   {
     return <<<JAVASCRIPT
       const appRoutes = {$this->ziggy->toJson(JSON_UNESCAPED_SLASHES)};

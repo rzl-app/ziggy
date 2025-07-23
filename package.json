@@ -14,6 +14,7 @@
   "bugs": "https://github.com/rzl-app/ziggy/issues",
   "dependencies": {
     "@types/qs": "^6.9.17",
+    "chalk": "^5.4.1",
     "qs": "~6.9.7",
     "vite-plugin-run": "^0.6.1"
   },
@@ -23,6 +24,8 @@
     "@babel/generator": "^7.28.0",
     "@babel/parser": "^7.28.0",
     "@babel/traverse": "^7.28.0",
+    "@types/babel__generator": "^7.27.0",
+    "@types/babel__traverse": "^7.20.7",
     "@types/vue": "^2.0.0",
     "del-cli": "^6.0.0",
     "dts-bundle-generator": "^9.5.1",
@@ -30,6 +33,7 @@
     "glob": "^11.0.3",
     "jsdom": "^26.1.0",
     "prettier": "^3.5.3",
+    "pretty-bytes": "^7.0.0",
     "tsup": "^8.5.0",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3",
@@ -103,12 +107,15 @@
     "prepare": "npm run build",
     "format": "prettier . --write",
     "check-publish": "npm pack --dry-run",
-    "removeDirDist": "rm -rf ./dist || true",
+    "clear:dist": "rm -rf ./dist || true",
     "postbuild": "del-cli \"dist/**/*.d.cts\"",
-    "prepublishOnly": "npm run removeDirDist && npm run build",
+    "prepublishOnly": "npm run clear:dist && npm run build",
     "prepare:deprecated": "npm run build && npm run build:vite-plugin",
     "release-patch": "npm version patch && git push && git push --tags && npm publish",
-    "build": "npm run removeDirDist && tsup && tsx tools/minify-esbuild.ts && npm run postbuild",
+    "build": "npm run clear:dist && tsup && npm run esbuild-minify && npm run dts-minify && npm run rename-iife && npm run postbuild",
+    "rename-iife": "tsx tools/rename-iife.ts",
+    "dts-minify": "tsx tools/minify-dts.ts",
+    "esbuild-minify": "tsx tools/esbuild.ts",
     "test": "vitest --typecheck"
   },
   "peerDependencies": {

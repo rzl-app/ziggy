@@ -1,57 +1,29 @@
 import { defineConfig } from "tsup";
-import removeDeprecatedPlugin from "./tools/removeDeprecatedPlugin";
 
 export default defineConfig([
+  //! # Main - Replace to esbuild for js, only types
   {
     entry: {
       index: "src/ts/ziggy/index.ts"
     },
     outDir: "dist",
     clean: true,
-    minify: true,
-    treeshake: true,
-    splitting: false,
-    sourcemap: false,
-    format: ["esm", "cjs", "iife"],
-    globalName: "RzlZiggy",
+    format: ["esm"],
     dts: {
-      resolve: true
-    },
-    outExtension({ format }) {
-      return {
-        js:
-          format === "esm"
-            ? ".esm.js"
-            : format === "cjs"
-              ? ".cjs"
-              : `.${format}.js`
-      };
-    },
-    esbuildPlugins: [removeDeprecatedPlugin()]
+      resolve: true,
+      only: true
+    }
   },
+  //! # Vite-Plugin - Replace to esbuild
   {
     entry: ["src/ts/vite-plugin/index.ts"],
     outDir: "dist/vite-plugin",
     clean: true,
-    minify: true,
-    treeshake: true,
-    splitting: false,
-    sourcemap: false,
-    format: ["esm", "cjs"],
-    external: ["vite-plugin-run", "vite", "fs", "path"],
+    format: ["esm"],
+    external: ["vite-plugin-run", "vite", "fs", "path", "chalk"],
     dts: {
-      resolve: true
-    },
-    outExtension({ format }) {
-      return {
-        js:
-          format === "esm"
-            ? ".esm.js"
-            : format === "cjs"
-              ? ".cjs"
-              : `.${format}.js`
-      };
-    },
-    esbuildPlugins: [removeDeprecatedPlugin()]
+      resolve: true,
+      only: true
+    }
   }
 ]);
