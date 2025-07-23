@@ -11,9 +11,9 @@ class File implements Stringable
   public function __construct(protected RzlZiggy|string $ziggy, private $ext)
   {
     if (config("rzl-ziggy.output.encrypting", true)) {
-      $this->ziggy = RzlZiggyHelper::encryptCryptPayload(json_encode($ziggy, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+      $this->ziggy = RzlZiggyHelper::encryptCryptPayload(json_encode($ziggy, JSON_UNESCAPED_SLASHES));
     } else {
-      $this->ziggy = json_encode($ziggy, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+      $this->ziggy = json_encode($ziggy, JSON_UNESCAPED_SLASHES);
     }
   }
 
@@ -47,10 +47,10 @@ class File implements Stringable
   }
 
   /** @deprecated Use `toString()` instead. */
-  public function OlderToString(): string
+  public function _toString(): string
   {
     return <<<JAVASCRIPT
-      const appRoutes = {$this->ziggy->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)};
+      const appRoutes = {$this->ziggy->toJson(JSON_UNESCAPED_SLASHES)};
 
       if (typeof window !== 'undefined' && typeof window.appRoutes !== 'undefined') {
         Object.assign(appRoutes.routes, window.appRoutes.routes);

@@ -29,7 +29,9 @@ class Types implements Stringable
        * @module rzl-app-ziggy
        */
       declare module "rzl-app-ziggy" {
-        interface RouteList {$routes->toJson(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)}
+        interface RouteList {
+          $routes->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES )
+        }
       }
       export {};
       JAVASCRIPT;
