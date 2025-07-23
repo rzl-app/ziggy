@@ -1,52 +1,55 @@
 {
   "authors": [
     {
+      "name": "Rizalfin Dwiky",
       "email": "rizalvindwiky@gmail.com",
-      "name": "Rizalfin Dwiky"
+      "url": "https://github.com/rzl-app"
     },
     {
-      "email": "daniel@tighten.co",
-      "name": "Daniel Coulbourne"
-    },
-    {
-      "email": "jake@tighten.co",
-      "name": "Jake Bathman"
-    },
-    {
-      "email": "jacob@tighten.co",
-      "name": "Jacob Baker-Kretzmar"
+      "name": "Tighten Co. (original Ziggy authors)",
+      "url": "https://github.com/tighten/ziggy"
     }
   ],
+  "author": "RZL",
   "bugs": "https://github.com/rzl-app/ziggy/issues",
   "dependencies": {
     "@types/qs": "^6.9.17",
     "qs": "~6.9.7",
     "vite-plugin-run": "^0.6.1"
   },
-  "description": "Use your Laravel named routes in JavaScript or TypeScript.",
+  "description": "Typed Laravel route generator for any frontend — works with React, Vue, Vanilla JS, and other JavaScript-based stacks.",
   "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/generator": "^7.28.0",
+    "@babel/parser": "^7.28.0",
+    "@babel/traverse": "^7.28.0",
+    "@types/vue": "^2.0.0",
+    "del-cli": "^6.0.0",
     "dts-bundle-generator": "^9.5.1",
+    "esbuild": "^0.25.8",
     "glob": "^11.0.3",
     "jsdom": "^26.1.0",
-    "microbundle": "^0.15.1",
     "prettier": "^3.5.3",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "vite": "^7.0.5",
-    "vitest": "^3.1.3"
+    "vitest": "^3.1.3",
+    "vue": "^3.5.17"
   },
   "sideEffects": false,
   "exports": {
     "./vite-plugin": {
       "types": "./dist/vite-plugin/index.d.ts",
-      "import": "./dist/vite-plugin/index.js",
+      "import": "./dist/vite-plugin/index.esm.js",
       "require": "./dist/vite-plugin/index.cjs",
-      "default": "./dist/vite-plugin/index.js"
+      "default": "./dist/vite-plugin/index.esm.js"
     },
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
+      "import": "./dist/index.esm.js",
       "require": "./dist/index.cjs",
-      "default": "./dist/index.js"
+      "default": "./dist/index.esm.js"
     }
   },
   "typesVersions": {
@@ -62,7 +65,7 @@
     "LICENSE.md"
   ],
   "homepage": "https://github.com/rzl-app/ziggy#readme",
-  "jsdelivr": "./dist/route.umd.js",
+  "jsdelivr": "./dist/rzl-ziggy.iife.js",
   "keywords": [
     "laravel",
     "routes",
@@ -78,7 +81,7 @@
     "ziggy js"
   ],
   "license": "MIT",
-  "main": "./dist/index.js",
+  "main": "./dist/index.esm.js",
   "mangle": {
     "regex": "^_(?!query)"
   },
@@ -97,27 +100,22 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "npm run removeDirDist && npm run build:esm && npm run build:umd && npm run build:types",
-    "build:vite-plugin-all": "npm run removeDirDist:vite-plugin && tsc -p tsconfig.vite-plugin.json",
-    "build:vite-plugin": "npm run removeDirDist:vite-plugin && microbundle -i ./src/ts/vite-plugin/index.ts -o ./dist/vite-plugin/index.js --format modern,esm,cjs --no-sourcemap --no-generateTypes && npm run build:vite-plugin-types",
-    "build:vite-plugin-types": "dts-bundle-generator --config dts-config-vite-plugin.cjs --silent",
-    "build:esm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --no-generateTypes --external none",
-    "build:npm": "microbundle -i ./src/ts/index.ts -o ./dist/index.js --format modern,esm --no-sourcemap --no-generateTypes",
-    "build:types": "dts-bundle-generator --config dts-config.cjs --silent",
-    "build:types-tsconfig": "tsc -p tsconfig.build.json && npm run removeUnUsedDTSDirDist",
-    "build:umd": "microbundle -i ./src/ts/browser.ts -o ./dist/route.js --format umd --name route --no-sourcemap --no-generateTypes --external none",
-    "check-publish": "npm pack --dry-run",
+    "prepare": "npm run build",
     "format": "prettier . --write",
-    "prepare": "npm run build && npm run build:vite-plugin",
-    "prepublishOnly": "npm run removeDirDist && npm run build:npm && npm run build:types",
-    "release-patch": "npm version patch && git push && git push --tags && npm publish",
+    "check-publish": "npm pack --dry-run",
     "removeDirDist": "rm -rf ./dist || true",
-    "removeDirDist:vite-plugin": "rm -rf ./dist/vite-plugin/* || true",
-    "removeUnUsedDTSDirDist": "node ./src/ts/scripts/clean-dts.mjs",
+    "postbuild": "del-cli \"dist/**/*.d.cts\"",
+    "prepublishOnly": "npm run removeDirDist && npm run build",
+    "prepare:deprecated": "npm run build && npm run build:vite-plugin",
+    "release-patch": "npm version patch && git push && git push --tags && npm publish",
+    "build": "npm run removeDirDist && tsup && tsx tools/minify-esbuild.ts && npm run postbuild",
     "test": "vitest --typecheck"
+  },
+  "peerDependencies": {
+    "vue": "^2.7.0 || ^3.0.0"
   },
   "type": "module",
   "types": "./dist/index.d.ts",
-  "unpkg": "./dist/route.umd.js",
+  "unpkg": "./dist/rzl-ziggy.iife.js",
   "version": "1.0.23"
 }

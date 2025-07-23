@@ -1,6 +1,5 @@
-![Rzl Ziggy - Use your Laravel routes in JavaScript](https://raw.githubusercontent.com/rzl-app/ziggy/main/ziggy-banner.png)
-
-# Rzl Ziggy – Use your Laravel routes in JavaScript (Customize).
+# Rzl Ziggy – Fully-Typed Laravel Route Generator for JS/TS
+(Forked from [Ziggy](https://github.com/tighten/ziggy) by [Tighten](https://github.com/tighten)).
 
 [![GitHub Actions Status](https://img.shields.io/github/actions/workflow/status/rzl-app/ziggy/test.yml?branch=main&style=flat)](https://github.com/rzl-app/ziggy/actions?query=workflow:Tests+branch:main)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/rzl-app/ziggy.svg?style=flat)](https://packagist.org/packages/rzl-app/ziggy)
@@ -8,7 +7,14 @@
 [![Latest Version on NPM](https://img.shields.io/npm/v/rzl-app-ziggy.svg?style=flat)](https://npmjs.com/package/rzl-app-ziggy)
 [![Downloads on NPM](https://img.shields.io/npm/dt/rzl-app-ziggy.svg?style=flat)](https://npmjs.com/package/rzl-app-ziggy)
 
-Rzl Ziggy – provides a JavaScript `route()` function that works like Laravel's, making it a breeze to use your named Laravel routes in JavaScript, with customize extra attribute and configs stub file.
+**Rzl Ziggy** is a customized fork of [Ziggy](https://github.com/tighten/ziggy) that provides a fully-typed JavaScript `route()` function mimicking Laravel's routing, with additional features such as extended config handling and attribute stubs.
+
+This package is **not officially maintained by Tighten**.
+
+It is framework-agnostic and can be used with **Vue**, **React**, **Vanilla JS**, and other JavaScript-based frontends that rely on Laravel's routing system.
+> ⚡️ Includes a Vite plugin for auto-generating route definitions on the fly from Laravel!
+
+---
 
 - [**Installation**](#installation)
 - [**Usage**](#usage)
@@ -17,7 +23,7 @@ Rzl Ziggy – provides a JavaScript `route()` function that works like Laravel's
     - [Route-model binding](#route-model-binding)
     - [TypeScript](#typescript)
 - [**JavaScript frameworks**](#javascript-frameworks)
-    - [Generating and importing Ziggy's configuration](#generating-and-importing-ziggys-configuration)
+    - [Generating and importing Ziggy's configuration](#generating-and-importing-rzl-ziggys-configuration)
     - [Importing the `route()` function](#importing-the-route-function)
     - [Vue](#vue)
     - [React](#react)
@@ -25,24 +31,29 @@ Rzl Ziggy – provides a JavaScript `route()` function that works like Laravel's
 - [**Filtering Routes**](#filtering-routes)
     - [Including/excluding routes](#includingexcluding-routes)
     - [Filtering with groups](#filtering-with-groups)
+- [**Routes File Generator**](#routes-file-generator)
+    - [Using JavaScript/TypeScript](#using-javascript-or-typescript)
+    - [Output Path Generate](#output-path-generate)
+- [**Automatically Regenerates File Routes**](#automatically-regenerates-file-routes)
 - [**Other**](#other)
 - [**Contributing**](#contributing)
+ 
 
 ## Installation
 
-Install Rzl Ziggy in your Laravel app with Composer:
+Install Rzl Ziggy in your Laravel backend with Composer:
 
 ```bash
 composer require rzl-app/ziggy
 ```
 
-Install Rzl Ziggy in your code base Front-end or SPA with NPM:
+Install Rzl Ziggy in your frontend or SPA with NPM:
 
 ```bash
 npm i rzl-app-ziggy
 ```
 
-Add the `@rzlRoutes` Blade directive to your main layout (_before_ your application's JavaScript), and the `route()` helper function will be available globally!
+Add the ***`@rzlRoutes`*** Blade directive to your main layout (_before_ your application's JavaScript), and the `route()` helper function will be available globally!
 
 > By default, the output of the `@rzlRoutes` Blade directive includes a list of all your application's routes and their parameters. This route list is included in the HTML of the page and can be viewed by end users. To configure which routes are included in this list, or to show and hide different routes on different pages, see [Filtering Routes](#filtering-routes).
 
@@ -303,7 +314,7 @@ declare global {
 }
 ```
 
-If you don't have Rzl Ziggy's NPM package installed, add the following to your `jsconfig.json` or `tsconfig.json` to load Rzl Ziggy's types from your vendor directory:
+If you don't have [Rzl Ziggy's NPM package installed](https://www.npmjs.com/package/rzl-app-ziggy), add the following to your `jsconfig.json` or `tsconfig.json` to load Rzl Ziggy's types from your vendor directory:
 
 ```json
 {
@@ -330,7 +341,7 @@ Rzl Ziggy provides an Artisan command to output its config and routes to a file:
 php artisan rzl-ziggy:generate
 ```
 
-This command places your configuration in `resources/routes/index.ts` by default, but you can customize this path by passing an argument to the Artisan command or setting the `rzl-ziggy.output.path.main` for name file and `rzl-ziggy.lang` valid value is (`ts` or `js`) in config value.
+This command places your configuration in `resources/routes/index.ts` by default, but you can customize this path by passing an argument to the Artisan command or setting in the laravel config file `rzl-ziggy.output.path.main` for name file [Output Path Generate](#output-path-generate) and `rzl-ziggy.lang` valid value is (`ts` or `js`) [Using JavaScript or TypeScript](#using-javascript-or-typescript).
 
 The file `rzl-ziggy:generate` creates looks something like this:
 
@@ -516,7 +527,6 @@ return [
     'except' => ['_debugbar.*', 'horizon.*', 'admin.*'],
 ];
 ```
-
 ### Filtering with groups
 
 You can also define groups of routes that you want make available in different places in your app, using a `groups` key in your config file:
@@ -531,6 +541,8 @@ return [
     ],
 ];
 ```
+
+## Routes File Generator
 
 ### Using JavaScript or TypeScript
 
@@ -585,6 +597,34 @@ To expose multiple groups you can pass an array of group names:
 ```
 
 > Note: Passing group names to the `@rzlRoutes` directive will always take precedence over your other `only` or `except` settings.
+
+## Automatically Regenerates File Routes
+
+#### Rzl Ziggy includes a built-in Vite plugin that automatically generates a route index file (index.ts or index.js) based on your Laravel named routes (location depends your setting, see: [Output Path Generate](#routes-file-generator)).
+#### - Works the same as:
+```bash
+php artisan rzl-ziggy:generate
+# or
+php artisan rzl-ziggy:generate --types
+```
+#### - Auto-regenerates the file whenever:
+    - You change .env (e.g. APP_URL)
+    - You update any routes/*.php file
+    - No need to run manual commands—works live in development 
+    (npm run dev).
+
+#### - Setting in your vite.config.ts or vite.config.js, register the plugin:
+
+```js
+import rzlZiggyPlugin from 'rzl-app-ziggy/vite-plugin'
+
+export default defineConfig({
+  plugins: [
+    rzlZiggyPlugin(),
+    // ...other your plugin
+  ],
+})
+```
 
 ## Other
 
@@ -665,18 +705,20 @@ mix.js('resources/js/app.js', 'public/js')
 
 ## Contributing
 
-To get started contributing to Ziggy, check out [the contribution guide](CONTRIBUTING.md).
+This project is heavily inspired by and based on [Ziggy](https://github.com/tighten/ziggy), originally developed by the team at Tighten.
 
-## Credits
-
-- [Rzl App](https://github.com/rzl-app)
+## Original Authors of Ziggy:
 - [Daniel Coulbourne](https://twitter.com/DCoulbourne)
 - [Jake Bathman](https://twitter.com/jakebathman)
 - [Matt Stauffer](https://twitter.com/stauffermatt)
 - [Jacob Baker-Kretzmar](https://twitter.com/bakerkretzmar)
 - [All contributors](https://github.com/rzl-app/ziggy/contributors)
 
-Thanks to [Caleb Porzio](http://twitter.com/calebporzio), [Adam Wathan](http://twitter.com/adamwathan), and [Jeffrey Way](http://twitter.com/jeffrey_way) for help solidifying the idea.
+## Additional Customization by:
+- [Rzl App](https://github.com/rzl-app)
+
+
+Special thanks to [Caleb Porzio](http://twitter.com/calebporzio), [Adam Wathan](http://twitter.com/adamwathan), and [Jeffrey Way](http://twitter.com/jeffrey_way) for help solidifying the idea.
 
 ## Security
 
@@ -685,3 +727,9 @@ Please review our [security policy](../../security/policy) on how to report secu
 ## License
 
 Rzl Ziggy is open-source software released under the MIT license. See [LICENSE](LICENSE) for more information.
+
+## Credits
+
+- Forked and extended from [Ziggy by Tighten.](https://github.com/tighten/ziggy)
+- Inspired by the work of Daniel Coulbourne, Jake Bathman, Matt Stauffer, and Jacob Baker-Kretzmar.
+- Custom features and enhancements maintained by [Rizalfin Dwiky (RZL)](https://github.com/rzl-app)

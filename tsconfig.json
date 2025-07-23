@@ -1,17 +1,18 @@
 {
   "compilerOptions": {
     "strict": true,
+    "allowJs": true,
+    "declaration": true,
+    "stripInternal": true,
     "alwaysStrict": true,
     "module": "ESNext",
     "target": "ESNext",
     "outDir": "./dist",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
   },
   "include": [
-    "src/ts/browser.ts",
-    "src/ts/index.ts",
-    "src/ts/types.ts",
-    "src/ts/global.ts"
+    "src/ts/ziggy",
+    "src/ts/vite-plugin",
   ],
   "exclude": [
     "vendor",

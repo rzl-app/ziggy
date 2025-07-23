@@ -4,3 +4,5 @@
 /src/ts/*.ts
 /src/ts/**/*.ts
 /src/ts
+/tools
+/deprecated

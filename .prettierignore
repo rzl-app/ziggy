@@ -1,4 +1,5 @@
 .github/
+deprecated/
 dist/
 tests/fixtures/
 vendor/
