@@ -5,7 +5,7 @@
 [![Downloads on Packagist](https://img.shields.io/packagist/dt/rzl-app/ziggy.svg?style=flat)](https://packagist.org/packages/rzl-app/ziggy)
 [![Latest Version on NPM](https://img.shields.io/npm/v/rzl-app-ziggy.svg?style=flat)](https://npmjs.com/package/rzl-app-ziggy)
 [![Downloads on NPM](https://img.shields.io/npm/dt/rzl-app-ziggy.svg?style=flat)](https://npmjs.com/package/rzl-app-ziggy)
-[![GitHub](https://img.shields.io/badge/GitHub-rzl--app%2Frzl--ziggy-181717?logo=github)](https://github.com/rzl-app/[rzl-utils-js](https://github.com/rzl-app/ziggy))
+[![GitHub](https://img.shields.io/badge/GitHub-rzl--app%2Frzl--ziggy-181717?logo=github)](https://github.com/rzl-app/ziggy)
 [![Repo on GitHub](https://img.shields.io/badge/Repo-on%20GitHub-181717?logo=github&style=flat-rounded)](https://github.com/rzl-app)
 
 **Rzl Ziggy** is a customized fork of [Ziggy](https://github.com/tighten/ziggy) that provides a fully-typed JavaScript `route()` function mimicking Laravel's routing, with additional features such as extended config handling and attribute stubs.
