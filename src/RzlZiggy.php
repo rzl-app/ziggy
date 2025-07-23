@@ -162,12 +162,94 @@ class RzlZiggy implements JsonSerializable
 
   /**
    * Convert this Ziggy instance into something JSON serializable.
+   * 
+   * Use full for generate `config` for passing to `route()` function js.
+   * 
+   * Example:
+   * ```php
+   * 
+   *   'rzlZiggy' => fn(): array => [
+   *      ...(new RzlZiggy)->jsonSerialize(),
+   *       "location" => [
+   *          "host" => $request->root(),
+   *       ],
+   *   ]
+   * ```
+   *  or you can pass config directly
+   * 
+   * ```php
+   *   'rzlZiggy' => fn(): array => [
+   *      ...(new RzlZiggy)->jsonConfigsCsr(), 
+   *   ]
+   * // or with ssr:
+   *    'rzlZiggy' => fn(): array => [
+   *      ...(new RzlZiggy)->jsonConfigsSsr(), 
+   *   ]
+   * ```
+   *
+   * 
    */
   public function jsonSerialize(): array
   {
     return [
       ...($routes = $this->toArray()),
       'defaults' => (object) $routes['defaults'],
+    ];
+  }
+
+  /**
+   * Convert this Ziggy instance into something JSON config with location for `CSR Only`.
+   * 
+   * Use full for generate `config` for passing to `route()` function js.
+   * 
+   * Example: 
+   * 
+   * ```php
+   *   'rzlZiggy' => fn(): array => [
+   *      ...(new RzlZiggy)->jsonConfigsCsr(), 
+   *   ]
+   * ```
+   *
+   * 
+   */
+  public function jsonConfigsCsr(null|\Illuminate\Http\Request $request = null): array
+  {
+    $req = $request ?? request();
+
+    return [
+      ...$this->jsonSerialize(),
+      "location" => [
+        "host" => $req->root(),
+      ],
+    ];
+  }
+
+  /**
+   * Convert this Ziggy instance into something JSON config with location for `SSR Only`.
+   * 
+   * Use full for generate `config` for passing to `route()` function js.
+   * 
+   * Example: 
+   * 
+   * ```php
+   *   'rzlZiggy' => fn(): array => [
+   *      ...(new RzlZiggy)->jsonConfigsSsr(), 
+   *   ]
+   * ```
+   *
+   * 
+   */
+  public function jsonConfigsSsr(null|\Illuminate\Http\Request $request = null): array
+  {
+    $req = $request ?? request();
+
+    return [
+      ...$this->jsonSerialize(),
+      "location" => [
+        "host" => $req->root(),
+        "pathname" => $req->getPathInfo(),
+        "search" => getQueryParams()
+      ],
     ];
   }
 
