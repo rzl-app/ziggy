@@ -346,8 +346,9 @@ This command places your configuration in `resources/routes/index.ts` by default
 
 The file `rzl-ziggy:generate` creates looks something like this:
 
-```js
-// resources/routes/index.{ts|js}
+#### For TypeScript:
+```ts
+// resources/routes/index.ts
 
 /** ---------------------------------
   * * ***Generates files/routes of app based on Laravel route names.***
@@ -357,34 +358,70 @@ The file `rzl-ziggy:generate` creates looks something like this:
   * 
   * _* **TypeScript (TS) Mode.**_
   */
-export const appRoutes: string = {
-    url: 'https://rzl.test',
-    port: null,
-    routes: {
-        home: {
-            uri: '/',
-            methods: [ 'GET', 'HEAD'],
-            domain: null,
-        },
-        login: {
-            uri: 'login',
-            methods: ['GET', 'HEAD'],
-            domain: null,
-        },
+export const appRoutes: string = `{
+  "url": "https://rzl.test",
+  "port": null,
+  "routes": {
+    "home": {
+      "uri": "/",
+      "methods": ["GET", "HEAD"],
+      "domain": null
     },
-};
+    "login": {
+      "uri": "login",
+      "methods": ["GET", "HEAD"],
+      "domain": null
+    }
+  }
+}`
+ 
+```
+#### For JavaScript:
+```js
+// resources/routes/index.js
+
+/** ---------------------------------
+  * * ***Generates files/routes of app based on Laravel route names.***
+  * ---------------------------------
+  *
+  * **This behaves similarly to `rzl-ziggy:generate`.**
+  * 
+  * _* **JavaScript (JS) Mode.**_
+  */
+export const appRoutes = `{
+  "url": "https://rzl.test",
+  "port": null,
+  "routes": {
+    "home": {
+      "uri": "/",
+      "methods": ["GET", "HEAD"],
+      "domain": null
+    },
+    "login": {
+      "uri": "login",
+      "methods": ["GET", "HEAD"],
+      "domain": null
+    }
+  }
+}`
  
 ```
 
 ### Importing the `route()` function
 
-You can import Rzl Ziggy like any other JavaScript library. Without the `@rzlRoutes` Blade directive Rzl Ziggy's config is not available globally, so it must be passed to the `route()` function manually:
+You can import Rzl Ziggy like any other JavaScript library.  
+However, without the `@rzlRoutes` Blade directive, the route config (typically named `appRoutes`) is not available globally.
+
+This means:
+
+- You must manually pass the config to the `route()` function.
+- Since `appRoutes` is a string, you need to parse it using `JSON.parse()` before passing it in.
 
 ```js
 import { route } from '../../vendor/rzl-app/ziggy';
 import { appRoutes } from './routes/index.js';
 
-route('home', undefined, undefined, appRoutes);
+route('home', undefined, undefined, JSON.parse(appRoutes));
 ```
 
 To simplify importing the `route()` function, you can create an alias to the vendor path:
@@ -443,7 +480,7 @@ import { rzlZiggyVue } from 'rzl-app-ziggy';
 import { appRoutes } from './routes/index.js';
 import App from './App.vue';
 
-createApp(App).use(rzlZiggyVue, appRoutes);
+createApp(App).use(rzlZiggyVue, JSON.parse(appRoutes));
 ```
 
 If you're using TypeScript, you may need to add the following declaration to a `.d.ts` file in your project to avoid type errors when using the `route()` function in your Vue component templates:
@@ -479,7 +516,7 @@ import { useRoute } from 'rzl-app-ziggy';
 import { appRoutes } from './routes/index.js';
 
 export default function PostsLink() {
-    const route = useRoute(appRoutes);
+    const route = useRoute(JSON.parse(appRoutes));
 
     return <a href={route('posts.index')}>Posts</a>;
 }
@@ -489,8 +526,8 @@ You can also make the `Rzl Ziggy` config object available globally, so you can c
 
 ```js
 // app.js
-import { appRoutes } from './routes/index.ts';
-globalThis.appRoutes = appRoutes;
+import { appRoutes } from './routes/index.js';
+globalThis.appRoutes = JSON.parse(appRoutes);
 ```
 
 ### SPAs or separate repos
@@ -621,7 +658,10 @@ import rzlZiggyPlugin from 'rzl-app-ziggy/vite-plugin'
 
 export default defineConfig({
   plugins: [
-    rzlZiggyPlugin(),
+    rzlZiggyPlugin({
+      // ...you can replace default options.
+    }),
+
     // ...other your plugin
   ],
 })
