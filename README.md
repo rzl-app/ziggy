@@ -24,7 +24,7 @@ It is framework-agnostic and can be used with **Vue**, **React**, **Vanilla JS**
     - [Route-model binding](#route-model-binding)
     - [TypeScript](#typescript)
 - [**JavaScript frameworks**](#javascript-frameworks)
-    - [Generating and importing Ziggy's configuration](#generating-and-importing-rzl-ziggys-configuration)
+    - [Generating and importing Rzl Ziggy's configuration](#generating-and-importing-rzl-ziggys-configuration)
     - [Importing the `route()` function](#importing-the-route-function)
     - [Vue](#vue)
     - [React](#react)
@@ -168,7 +168,7 @@ route('posts.show', 1); // 'https://rzl.test/de/posts/1'
 HTTP request with `axios`:
 
 ```js
-const post = { id: 1, title: 'Ziggy Stardust' };
+const post = { id: 1, title: 'Rzl Ziggy Stardust' };
 
 return axios.get(route('posts.show', post)).then((response) => response.data);
 ```
@@ -245,7 +245,7 @@ route().queryParams; // { hosts: 'all', type: 'test' }
 
 ### Route-model binding
 
-Rzl Ziggy supports Laravel's [route-model binding](https://laravel.com/docs/routing#route-model-binding), and can even recognize custom route key names. If you pass `route()` a JavaScript object as a route parameter, Ziggy will use the registered route-model binding keys for that route to find the correct parameter value inside the object. If no route-model binding keys are explicitly registered for a parameter, Rzl Ziggy will use the object's `id` key.
+Rzl Ziggy supports Laravel's [route-model binding](https://laravel.com/docs/routing#route-model-binding), and can even recognize custom route key names. If you pass `route()` a JavaScript object as a route parameter, Rzl Ziggy will use the registered route-model binding keys for that route to find the correct parameter value inside the object. If no route-model binding keys are explicitly registered for a parameter, Rzl Ziggy will use the object's `id` key.
 
 ```php
 // app/Models/Post.php
@@ -268,14 +268,14 @@ Route::get('blog/{post}', function (Post $post) {
 ```js
 const post = {
     id: 3,
-    title: 'Introducing Ziggy v1',
-    slug: 'introducing-ziggy-v1',
+    title: 'Introducing Rzl Ziggy v1',
+    slug: 'introducing-rzl-ziggy-v1',
     date: '2020-10-23T20:59:24.359278Z',
 };
 
 // Rzl Ziggy knows that this route uses the 'slug' route-model binding key:
 
-route('posts.show', post); // 'https://rzl.test/blog/introducing-ziggy-v1'
+route('posts.show', post); // 'https://rzl.test/blog/introducing-rzl-ziggy-v1'
 ```
 
 Rzl Ziggy also supports [custom keys](https://laravel.com/docs/routing#customizing-the-key) for scoped bindings declared directly in a route definition:
@@ -305,7 +305,7 @@ To generate route types, run the `rzl-ziggy:generate` command with the `--types`
 php artisan rzl-ziggy:generate --types
 ```
 
-To make your IDE aware that Ziggy's `route()` helper is available globally, and to type it correctly, add a declaration like this in a `.d.ts` file somewhere in your project:
+To make your IDE aware that Rzl Ziggy's `route()` helper is available globally, and to type it correctly, add a declaration like this in a `.d.ts` file somewhere in your project:
 
 ```ts
 import { route as routeFn } from 'rzl-app-ziggy';
@@ -332,7 +332,7 @@ If you don't have [Rzl Ziggy's NPM package installed](https://www.npmjs.com/pack
 > [!NOTE]
 > Many applications don't need the additional setup described here—the `@rzlRoutes` Blade directive makes Rzl Ziggy's `route()` function and config available globally, including within bundled JavaScript files.
 
-If you are not using the `@rzlRoutes` Blade directive, you can import Ziggy's `route()` function and configuration directly into JavaScript/TypeScript files.
+If you are not using the `@rzlRoutes` Blade directive, you can import Rzl Ziggy's `route()` function and configuration directly into JavaScript/TypeScript files.
 
 ### Generating and importing Rzl Ziggy's configuration
 
@@ -378,7 +378,7 @@ export const appRoutes: string = {
 
 ### Importing the `route()` function
 
-You can import Ziggy like any other JavaScript library. Without the `@rzlRoutes` Blade directive Rzl Ziggy's config is not available globally, so it must be passed to the `route()` function manually:
+You can import Rzl Ziggy like any other JavaScript library. Without the `@rzlRoutes` Blade directive Rzl Ziggy's config is not available globally, so it must be passed to the `route()` function manually:
 
 ```js
 import { route } from '../../vendor/rzl-app/ziggy';
@@ -409,14 +409,14 @@ import { route } from 'rzl-app-ziggy';
 
 ### Vue
 
-Ziggy includes a Vue plugin to make it easy to use the `route()` helper throughout your Vue app:
+Rzl Ziggy includes a Vue plugin to make it easy to use the `route()` helper throughout your Vue app:
 
 ```js
 import { createApp } from 'vue';
-import { ZiggyVue } from 'rzl-app-ziggy';
+import { rzlZiggyVue } from 'rzl-app-ziggy';
 import App from './App.vue';
 
-createApp(App).use(ZiggyVue);
+createApp(App).use(rzlZiggyVue);
 ```
 
 Now you can use the `route()` function anywhere in your Vue components and templates:
@@ -435,15 +435,15 @@ const route = inject('route');
 </script>
 ```
 
-If you are not using the `@rzlRoutes` Blade directive, import Ziggy's configuration too and pass it to `.use()`:
+If you are not using the `@rzlRoutes` Blade directive, import Rzl Ziggy's configuration too and pass it to `.use()`:
 
 ```js
 import { createApp } from 'vue';
-import { ZiggyVue } from 'rzl-app-ziggy';
+import { rzlZiggyVue } from 'rzl-app-ziggy';
 import { appRoutes } from './routes/index.js';
 import App from './App.vue';
 
-createApp(App).use(ZiggyVue, appRoutes);
+createApp(App).use(rzlZiggyVue, appRoutes);
 ```
 
 If you're using TypeScript, you may need to add the following declaration to a `.d.ts` file in your project to avoid type errors when using the `route()` function in your Vue component templates:
@@ -458,7 +458,7 @@ declare module 'vue' {
 
 ### React
 
-Ziggy includes a `useRoute()` hook to make it easy to use the `route()` helper in your React app:
+Rzl Ziggy includes a `useRoute()` hook to make it easy to use the `route()` helper in your React app:
 
 ```jsx
 import React from 'react';
@@ -471,7 +471,7 @@ export default function PostsLink() {
 }
 ```
 
-If you are not using the `@rzlRoutes` Blade directive, import Ziggy's configuration too and pass it to `useRoute()`:
+If you are not using the `@rzlRoutes` Blade directive, import Rzl Ziggy's configuration too and pass it to `useRoute()`:
 
 ```jsx
 import React from 'react';
@@ -495,16 +495,16 @@ globalThis.appRoutes = appRoutes;
 
 ### SPAs or separate repos
 
-Ziggy's `route()` function is available as an NPM package, for use in JavaScript projects managed separately from their Laravel backend (i.e. without Composer or a `vendor` directory). You can install the NPM package with `npm install rzl-app-ziggy`.
+Rzl Ziggy's `route()` function is available as an NPM package, for use in JavaScript projects managed separately from their Laravel backend (i.e. without Composer or a `vendor` directory). You can install the NPM package with `npm install rzl-app-ziggy`.
 
-To make your routes available on the frontend for this function to use, you can either run `php artisan rzl-ziggy:generate` and add the generated config file to your frontend project, or you can return Rzl Ziggy's config as JSON from an endpoint in your Laravel API (see [Retrieving Ziggy's config from an API endpoint](#retrieving-ziggys-config-from-an-api-endpoint) below for an example of how to set this up).
+To make your routes available on the frontend for this function to use, you can either run `php artisan rzl-ziggy:generate` and add the generated config file to your frontend project, or you can return Rzl Ziggy's config as JSON from an endpoint in your Laravel API (see [Retrieving Rzl Ziggy's config from an API endpoint](#retrieving-rzl-ziggys-config-from-an-api-endpoint) below for an example of how to set this up).
 
 ## Filtering Routes
 
-Ziggy supports filtering the list of routes it outputs, which is useful if you have certain routes that you don't want to be included and visible in your HTML source.
+Rzl Ziggy supports filtering the list of routes it outputs, which is useful if you have certain routes that you don't want to be included and visible in your HTML source.
 
 > [!IMPORTANT]
-> Hiding routes from Ziggy's output is not a replacement for thorough authentication and authorization. Routes that should not be accessibly publicly should be protected by authentication whether they're filtered out of Ziggy's output or not.
+> Hiding routes from Rzl Ziggy's output is not a replacement for thorough authentication and authorization. Routes that should not be accessibly publicly should be protected by authentication whether they're filtered out of Rzl Ziggy's output or not.
 
 ### Including/excluding routes
 
@@ -612,8 +612,7 @@ php artisan rzl-ziggy:generate --types
 #### - Auto-regenerates the file whenever:
     - You change .env (e.g. APP_URL)
     - You update any routes/*.php file
-    - No need to run manual commands—works live in development 
-    (npm run dev).
+    - No need to run manual commands—works live in development (npm run dev).
 
 #### - Setting in your vite.config.ts or vite.config.js, register the plugin:
 
@@ -627,43 +626,6 @@ export default defineConfig({
   ],
 })
 ```
-
-## Other
-
-### TLS/SSL termination and trusted proxies
-
-<!-- Or: What to do if your app is served over `https` but Ziggy's `route()` helper generates `http` URLs -->
-
-If your application is using [TLS/SSL termination](https://en.wikipedia.org/wiki/TLS_termination_proxy) or is behind a load balancer or proxy, or if it's hosted on a service that is, Ziggy may generate URLs with a scheme of `http` instead of `https`, even if your app URL uses `https`. To fix this, set up your Laravel app's trusted proxies according to the documentation on [Configuring Trusted Proxies](https://laravel.com/docs/requests#configuring-trusted-proxies).
-
-### Using `@rzlRoutes` with a Content Security Policy
-
-A [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) (CSP) may block inline scripts, including those output by Ziggy's `@rzlRoutes` Blade directive. If you have a CSP and are using a nonce to flag safe inline scripts, you can pass the nonce to the `@rzlRoutes` directive and it will be added to Ziggy's script tag:
-
-```php
-@rzlRoutes(nonce: 'your-nonce-here')
-```
-
-### Disabling the `route()` helper
-
-If you only want to use the `@rzlRoutes` directive to make Ziggy's configuration available in JavaScript, but don't need the `route()` helper function, set the `rzl-ziggy.skip-route-function` config to `true`.
-
-### Retrieving Rzl Ziggy's config from an API endpoint
-
-If you need to retrieve Rzl Ziggy's config from your Laravel backend over the network, you can create a route that looks something like this:
-
-```php
-// routes/api.php
-
-use RzlApp\Ziggy\RzlZiggy;
-
-Route::get('rzl-ziggy', fn () => response()->json(new RzlZiggy));
-```
-
-### Re-generating the routes file when your app routes change
-
-If you are generating your Rzl Ziggy config as a file by running `php artisan rzl-ziggy:generate`, you may want to re-run that command when your app's route files change. The example below is a Laravel Mix plugin, but similar functionality could be achieved without Mix. Huge thanks to [Nuno Rodrigues](https://github.com/nacr) for [the idea and a sample implementation](https://github.com/rzl-app/ziggy/issues/321#issuecomment-689150082). See [#655](https://github.com/rzl-app/ziggy/pull/655/files#diff-4aeb78f813e14842fcf95bdace9ced23b8a6eed60b23c165eaa52e8db2f97b61) or [vite-plugin-ziggy](https://github.com/aniftyco/vite-plugin-ziggy) for Vite examples.
-
 <details>
 <summary>Laravel Mix plugin example</summary>
 <p></p>
@@ -672,7 +634,7 @@ If you are generating your Rzl Ziggy config as a file by running `php artisan rz
 const mix = require('laravel-mix');
 const { exec } = require('child_process');
 
-mix.extend('ziggy', new class {
+mix.extend('rzlZiggy', new class {
     register(config = {}) {
         this.watch = config.watch ?? ['routes/**/*.php'];
         this.path = config.path ?? '';
@@ -701,9 +663,41 @@ mix.extend('ziggy', new class {
 
 mix.js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [])
-    .ziggy();
+    .rzlZiggy();
 ```
 </details>
+
+## Other
+
+### TLS/SSL termination and trusted proxies
+
+<!-- Or: What to do if your app is served over `https` but Rzl Ziggy's `route()` helper generates `http` URLs -->
+
+If your application is using [TLS/SSL termination](https://en.wikipedia.org/wiki/TLS_termination_proxy) or is behind a load balancer or proxy, or if it's hosted on a service that is, Rzl Ziggy may generate URLs with a scheme of `http` instead of `https`, even if your app URL uses `https`. To fix this, set up your Laravel app's trusted proxies according to the documentation on [Configuring Trusted Proxies](https://laravel.com/docs/requests#configuring-trusted-proxies).
+
+### Using `@rzlRoutes` with a Content Security Policy
+
+A [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) (CSP) may block inline scripts, including those output by Rzl Ziggy's `@rzlRoutes` Blade directive. If you have a CSP and are using a nonce to flag safe inline scripts, you can pass the nonce to the `@rzlRoutes` directive and it will be added to Rzl Ziggy's script tag:
+
+```php
+@rzlRoutes(nonce: 'your-nonce-here')
+```
+
+### Disabling the `route()` helper
+
+If you only want to use the `@rzlRoutes` directive to make Rzl Ziggy's configuration available in JavaScript, but don't need the `route()` helper function, set the `rzl-ziggy.skip-route-function` config to `true`.
+
+### Retrieving Rzl Ziggy's config from an API endpoint
+
+If you need to retrieve Rzl Ziggy's config from your Laravel backend over the network, you can create a route that looks something like this:
+
+```php
+// routes/api.php
+
+use RzlApp\Ziggy\RzlZiggy;
+
+Route::get('rzl-ziggy', fn () => response()->json(new RzlZiggy));
+```
 
 ## Contributing
 
