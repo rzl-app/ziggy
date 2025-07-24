@@ -81,7 +81,6 @@ Route::get('posts/{post}', fn (Post $post) => /* ... */)->name('posts.show');
 ```
 
 ```js
-route('posts.show', 1);           // 'https://rzl.test/posts/1'
 route('posts.show', [1]);         // 'https://rzl.test/posts/1'
 route('posts.show', { post: 1 }); // 'https://rzl.test/posts/1'
 ```
@@ -89,8 +88,7 @@ route('posts.show', { post: 1 }); // 'https://rzl.test/posts/1'
 #### Multiple parameters
 
 ```php
-Route::get('venues/{venue}/events/{event}', fn (Venue $venue, Event $event) => /* ... */)
-    ->name('venues.events.show');
+Route::get('venues/{venue}/events/{event}', fn (Venue $venue, Event $event) => /* ... */)->name('venues.events.show');
 ```
 
 ```js
@@ -103,8 +101,7 @@ route('venues.events.show', { venue: 1, event: 2 }); // 'https://rzl.test/venues
 Rzl Ziggy adds arguments that don't match any named route parameters as query parameters:
 
 ```php
-Route::get('venues/{venue}/events/{event}', fn (Venue $venue, Event $event) => /* ... */)
-    ->name('venues.events.show');
+Route::get('venues/{venue}/events/{event}', fn (Venue $venue, Event $event) => /* ... */)->name('venues.events.show');
 ```
 
 ```js
@@ -160,7 +157,7 @@ URL::defaults(['locale' => $request->user()->locale ?? 'de']);
 ```
 
 ```js
-route('posts.show', 1); // 'https://rzl.test/de/posts/1'
+route('posts.show', { post: 1 }); // 'https://rzl.test/de/posts/1'
 ```
 
 #### Examples
@@ -373,7 +370,7 @@ export const appRoutes: string = `{
       "domain": null
     }
   }
-}`
+}`;
  
 ```
 #### For JavaScript:
@@ -403,7 +400,7 @@ export const appRoutes = `{
       "domain": null
     }
   }
-}`
+}`;
  
 ```
 
