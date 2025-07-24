@@ -47,6 +47,11 @@ type DefaultRoutable={id:RawParameterValue;}& Record<keyof any,unknown>;
  */
 type ParameterValue=RawParameterValue | DefaultRoutable;
 /** -------------------------------------------------------
+ * * ***A route parameter value.***
+ * -------------------------------------------------------
+ */
+type ParameterValueProps=DefaultRoutable;
+/** -------------------------------------------------------
  * * ***A parse-able route parameter, either plain or nested inside an object under its binding key.***
  * -------------------------------------------------------
  */
@@ -55,7 +60,7 @@ type Routable<I extends ParameterInfo>=I extends{binding:string;}?({[K in I["bin
  * * ***An object containing a special '_query' key to target the query string of a URL.***
  * -------------------------------------------------------
  */
-type HasQueryParam={_query?:UnknownObject;};
+type HasQueryParam={_query?:Record<string,unknown>;};
 /** -------------------------------------------------------
  * * ***An object of parameters for an unspecified route.***
  * -------------------------------------------------------
@@ -90,12 +95,12 @@ type RouteParamsArray<N extends RouteName>=N extends KnownRouteName ? KnownRoute
  * * ***All possible parameter argument shapes for a route.***
  * -------------------------------------------------------
  */
-type RouteParams<N extends RouteName>=RouteParamsObject<N>| RouteParamsArray<N>;type UnknownObject=Record<string,unknown>;
+type RouteParams<N extends RouteName>=RouteParamsObject<N>| RouteParamsArray<N>;
 /** -------------------------------------------------------
  * * ***A Route Definition Type.***
  * -------------------------------------------------------
  */
-type RouteDefinition={uri:string;methods:("GET" | "HEAD" | "POST" | "PATCH" | "PUT" | "OPTIONS" | "DELETE")[];domain?:string;parameters?:string[];bindings?:Record<string,string>;wheres?:UnknownObject;middleware?:string[];};
+type RouteDefinition={uri:string;methods:("GET" | "HEAD" | "POST" | "PATCH" | "PUT" | "OPTIONS" | "DELETE")[];domain?:string;parameters?:string[];bindings?:Record<string,string>;wheres?:Record<string,unknown>;middleware?:string[];};
 /** -------------------------------------------------------
  * * ***Rzl Ziggy's config object.***
  * -------------------------------------------------------
@@ -158,7 +163,7 @@ current():ValidRouteName | undefined;
      * @see [Check rzl-app-ziggy the current route: `route().current(...)`](https://github.com/rzl-app/ziggy#check-the-current-route-routecurrent)
      *
      */
-current<T extends RouteName>(name:T,params?:ParameterValue | RouteParams<T>):boolean;
+current<T extends RouteName>(name:T,params?:ParameterValueProps | RouteParams<T>):boolean;
 /** ---------------------------------------------
      * * ***Retrieve the current route with all params (query search params and laravel route params): `route().params`***
      * ---------------------------------------------
@@ -172,7 +177,7 @@ current<T extends RouteName>(name:T,params?:ParameterValue | RouteParams<T>):boo
      * @see [Retrieve the current route with all params (query search params and laravel route params): `route().params`](https://github.com/rzl-app/ziggy?tab=readme-ov-file#retrieve-the-current-route-params-routeparams)
      *
      */
-get params():Record<string,string>;
+get params():Record<string,string | ParsedQs | undefined>;
 /** ---------------------------------------------
      * * ***Retrieve only params route in laravel route (except query search params) in the current route: `route().routeParams`***
      * ---------------------------------------------
@@ -185,7 +190,7 @@ get params():Record<string,string>;
      *
      * @see [Retrieve only params route in laravel route (except query search params) in the current route: `route().routeParams`](https://github.com/rzl-app/ziggy?tab=readme-ov-file#retrieve-only-params-route-in-laravel-route-except-query-search-params-in-the-current-route-routerouteparams)
      */
-get routeParams():Record<string,string>;
+get routeParams():Record<string,string | undefined>;
 /** ---------------------------------------------
      * * ***Retrieve all search query params only (except params route in laravel route) in the current route: `route().queryParams`***
      * ---------------------------------------------
@@ -228,14 +233,100 @@ type RouterConfig={absolute?:boolean;url:string;port:number | null;defaults:Reco
  * - If called with just configuration, it returns a `Router` instance using that config.
  * - If called with a route name and optional parameters, it returns a full URL string.
  *
- * @template T - A valid route name (based on your Ziggy route definitions).
+ * @template T - A valid route name (based on your `appRoutes` route definitions).
  *
- * @param {T} [name] - The name of the route (e.g., `"posts.show"`).
- * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (either an object or a single value).
- * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host).
- * @param {Config} [config] - Optional custom route configuration object.
+ * @param {T} [name] - The name of the route (e.g., `"posts.show"`), defaultValue is `undefined`.
+ * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (either an object or a array value), defaultValue is `undefined`.
+ * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
+ * @param {Config} [config] - Optional route configuration object.
+ * Required only if the global `appRoutes` variable is not available.
+ * By default, the function will use the global `appRoutes` if present.
  *
- * @returns {string | Router} A generated URL string or a `Router` instance.
+ * @returns {string | Router} A generated URL string or a `Router` instance, depend of `name` argument.
+ *
+ * @example
+ * // Returns something like "/posts/123"
+ * route("posts.show", { id: 123 });
+ *
+ * @example
+ * // Returns absolute URL like "https://example.com/posts/123"
+ * route("posts.show", { id: 123 }, true);
+ *
+ * @example
+ * // Returns Router instance like route().has(...) or router().current() ...
+ * const r = route();
+ * console.log(r) // ➔ r instance of Router.
+ *
+ * @example
+ * // Returns Router instance like route().has(...) or router().current() ...
+ * const r = route(undefined);
+ * console.log(r) // ➔ r instance of Router.
+ *
+ * @example
+ * // Returns Router instance like route().has(...) or router().current() ...
+ * const r = route(undefined, undefined, true, JSON.parse(appRoutes));
+ * console.log(r) // ➔ r instance of Router.
+ *
+ * @see [More Docs see: route() function.](https://github.com/rzl-app/ziggy?tab=readme-ov-file#route-function)
+ */
+declare function route():Router;
+/** -------------------------------------------------------
+ * * ***Rzl Ziggy's `route()` helper.***
+ * -------------------------------------------------------
+ *
+ * This function works similarly to Laravel's [`route()` helper](https://laravel.com/docs/helpers#method-route).
+ * You can pass it the name of a route and any required parameters, and it will generate a proper URL string.
+ *
+ * - If called with no arguments, it returns a `Router` instance for more advanced usage.
+ * - If called with just configuration, it returns a `Router` instance using that config.
+ * - If called with a route name and optional parameters, it returns a full URL string.
+ *
+ * @template T - A valid route name (based on your `appRoutes` route definitions).
+ *
+ * @param {T} [name] - The name of the route (is undefined), defaultValue is `undefined`.
+ * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (because argument `name` is `undefined`, so argument params only can accept `undefined`), defaultValue is `undefined`.
+ * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
+ * @param {Config} [config] - Optional route configuration object.
+ * Required only if the global `appRoutes` variable is not available.
+ * By default, the function will use the global `appRoutes` if present.
+ *
+ * @returns {Router} Return `Router` instance cause argument name is `undefined`.
+ *
+ * @example
+ * // Returns Router instance like route().has(...) or router().current() ...
+ * const r = route(undefined);
+ * console.log(r) // ➔ r instance of Router.
+ *
+ *
+ * @example
+ * // Returns Router instance like route().has(...) or router().current() ...
+ * const r = route(undefined, undefined, true, JSON.parse(appRoutes));
+ * console.log(r) // ➔ r instance of Router.
+ *
+ * @see [More Docs see: route() function.](https://github.com/rzl-app/ziggy?tab=readme-ov-file#route-function)
+ */
+declare function route(name:undefined,params?:undefined,absolute?:boolean,config?:Config):Router;
+/** -------------------------------------------------------
+ * * ***Rzl Ziggy's `route()` helper.***
+ * -------------------------------------------------------
+ *
+ * This function works similarly to Laravel's [`route()` helper](https://laravel.com/docs/helpers#method-route).
+ * You can pass it the name of a route and any required parameters, and it will generate a proper URL string.
+ *
+ * - If called with no arguments, it returns a `Router` instance for more advanced usage.
+ * - If called with just configuration, it returns a `Router` instance using that config.
+ * - If called with a route name and optional parameters, it returns a full URL string.
+ *
+ * @template T - A valid route name (based on your `appRoutes` route definitions).
+ *
+ * @param {T} [name] - The name of the route (e.g., `"posts.show"`), defaultValue is `undefined`.
+ * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (either an object or a array value), defaultValue is `undefined`.
+ * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
+ * @param {Config} [config] - Optional route configuration object.
+ * Required only if the global `appRoutes` variable is not available.
+ * By default, the function will use the global `appRoutes` if present.
+ *
+ * @returns {string} Return `string` instance cause argument `name` is not `undefined`.
  *
  * @example
  * // Returns something like "/posts/123"
@@ -247,16 +338,134 @@ type RouterConfig={absolute?:boolean;url:string;port:number | null;defaults:Reco
  *
  * @see [More Docs see: route() function.](https://github.com/rzl-app/ziggy?tab=readme-ov-file#route-function)
  */
-declare function route():Router;declare function route(name:undefined,params:undefined,absolute?:boolean,config?:Config):Router;declare function route<T extends ValidRouteName>(name:T,params?:RouteParams<T>| undefined,absolute?:boolean,config?:Config):string;declare function route<T extends ValidRouteName>(name:T,params?:ParameterValue | undefined,absolute?:boolean,config?:Config):string;
+declare function route<T extends ValidRouteName>(name:T,params?:ParameterValueProps | undefined,absolute?:boolean,config?:Config):string;declare function route<T extends ValidRouteName>(name:T,params?:RouteParams<T>| undefined,absolute?:boolean,config?:Config):string;type ReactRouteHook={
+/** -------------------------------------------------------
+     * * ***Rzl Ziggy's `route()` from `useRouter` helper.***
+     * -------------------------------------------------------
+     *
+     * This function works similarly to Laravel's [`route()` helper](https://laravel.com/docs/helpers#method-route).
+     * You can pass it the name of a route and any required parameters, and it will generate a proper URL string.
+     *
+     * - If called with no arguments, it returns a `Router` instance for more advanced usage.
+     * - If called with a route name and optional parameters, it returns a full URL string.
+     *
+     * > ⚠️ Unlike the standalone `route()` helper, this version does **not** require a `config` parameter,
+     * > because the route configuration is already provided by `useRouter()`.
+     *
+     * @template T - A valid route name (based on your `appRoutes` route definitions).
+     *
+     * @param {T} [name] - The name of the route (e.g., `"posts.show"`), defaultValue is `undefined`.
+     * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (either an object or a array value), defaultValue is `undefined`.
+     * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
+     *
+     * @returns {string | Router} A generated URL string or a `Router` instance, depend of `name` argument.
+     *
+     * @example
+     * // Returns something like "/posts/123"
+     * route("posts.show", { id: 123 });
+     *
+     * @example
+     * // Returns absolute URL like "https://example.com/posts/123"
+     * route("posts.show", { id: 123 }, true);
+     *
+     * @example
+     * // Returns Router instance like route().has(...) or router().current() ...
+     * const r = route();
+     * console.log(r) // ➔ r instance of Router.
+     *
+     * @example
+     * // Returns Router instance like route().has(...) or router().current() ...
+     * const r = route(undefined);
+     * console.log(r) // ➔ r instance of Router.
+     *
+     * @example
+     * // Returns Router instance like route().has(...) or router().current() ...
+     * const r = route(undefined, undefined, true, JSON.parse(appRoutes));
+     * console.log(r) // ➔ r instance of Router.
+     *
+     * @see [More Docs see: route() function.](https://github.com/rzl-app/ziggy?tab=readme-ov-file#route-function)
+     */
+():Router;
+/** -------------------------------------------------------
+     * * ***Rzl Ziggy's `route()` from `useRouter` helper.***
+     * -------------------------------------------------------
+     *
+     * This function works similarly to Laravel's [`route()` helper](https://laravel.com/docs/helpers#method-route).
+     * You can pass it the name of a route and any required parameters, and it will generate a proper URL string.
+     *
+     * - If called with no arguments, it returns a `Router` instance for more advanced usage.
+     * - If called with a route name and optional parameters, it returns a full URL string.
+     *
+     * > ⚠️ Unlike the standalone `route()` helper, this version does **not** require a `config` parameter,
+     * > because the route configuration is already provided by `useRouter()`.
+     *
+     * @template T - A valid route name (based on your `appRoutes` route definitions).
+     *
+     * @param {T} [name] - The name of the route (is undefined), defaultValue is `undefined`.
+     * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (because argument `name` is `undefined`, so argument params only can accept `undefined`), defaultValue is `undefined`.
+     * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
+     *
+     * @returns {Router} Return `Router` instance cause argument name is `undefined`.
+     *
+     * @example
+     * // Returns Router instance like route().has(...) or router().current() ...
+     * const r = route(undefined);
+     * console.log(r) // ➔ r instance of Router.
+     *
+     *
+     * @example
+     * // Returns Router instance like route().has(...) or router().current() ...
+     * const r = route(undefined, undefined, true, JSON.parse(appRoutes));
+     * console.log(r) // ➔ r instance of Router.
+     *
+     * @see [More Docs see: route() function.](https://github.com/rzl-app/ziggy?tab=readme-ov-file#route-function)
+     */
+(name:undefined,params?:undefined,absolute?:boolean):Router;
+/** -------------------------------------------------------
+     * * ***Rzl Ziggy's `route()` from `useRouter` helper.***
+     * -------------------------------------------------------
+     *
+     * This function works similarly to Laravel's [`route()` helper](https://laravel.com/docs/helpers#method-route).
+     * You can pass it the name of a route and any required parameters, and it will generate a proper URL string.
+     *
+     * - If called with no arguments, it returns a `Router` instance for more advanced usage.
+     * - If called with a route name and optional parameters, it returns a full URL string.
+     *
+     * > ⚠️ Unlike the standalone `route()` helper, this version does **not** require a `config` parameter,
+     * > because the route configuration is already provided by `useRouter()`.
+     *
+     * @template T - A valid route name (based on your `appRoutes` route definitions).
+     *
+     * @param {T} [name] - The name of the route (e.g., `"posts.show"`), defaultValue is `undefined`.
+     * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (either an object or a array value), defaultValue is `undefined`.
+     * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
+     *
+     * @returns {string} Return `string` instance cause argument `name` is not `undefined`.
+     *
+     * @example
+     * // Returns something like "/posts/123"
+     * route("posts.show", { id: 123 });
+     *
+     * @example
+     * // Returns absolute URL like "https://example.com/posts/123"
+     * route("posts.show", { id: 123 }, true);
+     *
+     * @see [More Docs see: route() function.](https://github.com/rzl-app/ziggy?tab=readme-ov-file#route-function)
+     */
+<T extends ValidRouteName>(name:T,params?:ParameterValueProps | undefined,absolute?:boolean,config?:Config):string;<T extends ValidRouteName>(name:T,params?:RouteParams<T>| undefined,absolute?:boolean):string;};
 /** -------------------------------------------------------
  * * ***Rzl Ziggy's React Hook Helper.***
  * -------------------------------------------------------
  *
- * Rzl Ziggy includes a useRoute() hook to make it easy to use the route() helper in your React app:
+ * Rzl Ziggy includes a useRoute() hook to make it easy to use the route() helper in your React app.
  *
- * @see [More docs use with vue: #Rzl Ziggy Vue.](https://github.com/rzl-app/ziggy?tab=readme-ov-file#react)
+ * @param {Config} [defaultConfig] - Optional route configuration object.
+ * Required only if the global `appRoutes` variable is not available.
+ * By default, the function will use the global `appRoutes` if present.
+ *
+ * @see [More docs use with react hook: useRoute.](https://github.com/rzl-app/ziggy?tab=readme-ov-file#react)
  */
-declare function useRoute(defaultConfig?:Config):typeof route;interface Vue2CompatApp{version:string;mixin:(m:ComponentOptions)=>void;[key:string]:any;}type VueApp=App | Vue2CompatApp;
+declare function useRoute(defaultConfig?:Config):ReactRouteHook;interface Vue2CompatApp{version:string;mixin:(m:ComponentOptions)=>void;[key:string]:any;}type VueApp=App | Vue2CompatApp;
 /** -------------------------------------------------------
  * * ***Rzl Ziggy's Vue Plugin.***
  * -------------------------------------------------------
