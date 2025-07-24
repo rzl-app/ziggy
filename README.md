@@ -189,6 +189,8 @@ return axios.get(route('posts.show', post)).then((response) => response.data);
   - `❌ Uncaught TypeError: can't access property "toString", e is undefined.`
 
   - `Rzl-Ziggy Error: Function 'route()' was implicitly coerced to a primitive without a name.`
+
+  - `Rzl-Ziggy Error - Function route() was called without a name and used as a string. Pass a valid route name, or use route().current() to get the current route name, or...`
   
   - `Rzl-Ziggy Error: route() was called without a route name and then implicitly converted to a string. This typically happens when route() is used in a string context...`
   ```
