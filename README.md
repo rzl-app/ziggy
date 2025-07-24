@@ -170,6 +170,40 @@ const post = { id: 1, title: 'Rzl Ziggy Stardust' };
 return axios.get(route('posts.show', post)).then((response) => response.data);
 ```
 
+### ⚠️ Warning: Calling `route()` Without Arguments
+
+- #### Calling `route()` without a name (or with undefined / null) can cause runtime errors when used in a string context.
+
+  ❌ Incorrect usage:
+
+
+  ```js
+  href={route()}
+  console.log(`${route()}`)
+  route(null)
+  route(undefined)
+  ```
+  These patterns may throw an error, such as:
+  ```rush
+  - ❌ Uncaught TypeError: can't access property "toString", e is undefined.
+
+  - `Rzl-Ziggy Error: Function `route()` was implicitly coerced to a primitive without a name.`
+  
+  - Rzl-Ziggy Error: route() was called without a route name and then implicitly converted to a string. This typically happens when route() is used in a string context...
+  ```
+  > ℹ️ The actual error message may vary depending on your environment or build process, but it typically happens because route() without a name returns an object that can't be coerced to a string.
+
+  ✅ Correct usage:
+  ```js
+  route('events.index'); // ✔️ Returns the full URL
+  ```
+  > 💡 To safely introspect the current route, use route() as an object:
+  >  - route().params
+  >  - route().queryParams
+  >  - route().routeParams
+  >  - route().current()
+  >  - route().has('route.name')
+
 ### `Router` class
 
 Calling Rzl Ziggy's `route()` function with no arguments will return an instance of its JavaScript `Router` class, which has some other useful properties and methods.
