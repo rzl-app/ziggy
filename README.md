@@ -196,14 +196,25 @@ return axios.get(route('posts.show', post)).then((response) => response.data);
 
   ✅ Correct usage:
   ```js
-  route('events.index'); // ✔️ Returns the full URL
+  route('events.index');    
+  // ➔ Returns the full URL
+  route().params            
+  // ➔ Retrieve the current route with all params, queryParams and routeParams.
+  route().queryParams       
+  // ➔ Retrieve all search query params only (except params route in laravel route) in the current route: route().queryParams
+  route().routeParams       
+  // ➔ Retrieve only params route in laravel route (except query search params) in the current route: route().routeParams
+  route().current()         
+  // ➔ Check the current route name
+  route().has('route.name') 
+  // ➔ Check if a route exists
   ```
   > 💡 To safely introspect the current route, use route() as an object:
-  >  - route().params
-  >  - route().queryParams
-  >  - route().routeParams
-  >  - route().current()
-  >  - route().has('route.name')
+  >  - [route().current()](#check-the-current-route-routecurrent)
+  >  - [route().has('route.name')](#check-if-a-route-exists-routehas)
+  >  - [route().params](#retrieve-the-current-route-params-routeparams)
+  >  - [route().queryParams](#retrieve-all-search-query-params-only-except-params-route-in-laravel-route-in-the-current-route-routequeryparams)
+  >  - [route().routeParams](#retrieve-only-params-route-in-laravel-route-except-query-search-params-in-the-current-route-routerouteparams)
 
 ---
 
