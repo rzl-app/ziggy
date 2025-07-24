@@ -177,7 +177,7 @@ current<T extends RouteName>(name:T,params?:ParameterValueProps | RouteParams<T>
      * @see [Retrieve the current route with all params (query search params and laravel route params): `route().params`](https://github.com/rzl-app/ziggy?tab=readme-ov-file#retrieve-the-current-route-params-routeparams)
      *
      */
-get params():Record<string,string | ParsedQs | undefined>;
+get params():Record<string,string | undefined>;
 /** ---------------------------------------------
      * * ***Retrieve only params route in laravel route (except query search params) in the current route: `route().routeParams`***
      * ---------------------------------------------
