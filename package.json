@@ -109,7 +109,7 @@
     "check-publish": "npm pack --dry-run",
     "clear:dist": "rm -rf ./dist || true",
     "postbuild": "del-cli \"dist/**/*.d.cts\"",
-    "prepublishOnly": "npm run clear:dist && npm run build",
+    "prepublishOnly": "npm run clear:dist",
     "prepare:deprecated": "npm run build && npm run build:vite-plugin",
     "release-patch": "npm version patch && git push && git push --tags && npm publish",
     "build": "npm run clear:dist && tsup && npm run esbuild-minify && npm run dts-minify && npm run rename-iife && npm run postbuild",
