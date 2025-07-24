@@ -53,6 +53,7 @@ const buildAndLog = async ({
       treeShaking: true,
       minify: true,
       bundle: true,
+      charset: "utf8",
       splitting: entry.endsWith(".esm.js") ? true : false,
       format,
       platform,
