@@ -22,7 +22,7 @@ It is framework-agnostic and can be used with **Vue**, **React**, **Vanilla JS**
     - [`route()` function](#route-function)
     - [`Router` class](#router-class)
     - [Route-model binding](#route-model-binding)
-    - [TypeScript](#typescript)
+    - [TypeScript Support](#typescript-support)
 - [**JavaScript frameworks**](#javascript-frameworks)
     - [Generating and importing Rzl Ziggy's configuration](#generating-and-importing-rzl-ziggys-configuration)
     - [Importing the `route()` function](#importing-the-route-function)
@@ -39,7 +39,7 @@ It is framework-agnostic and can be used with **Vue**, **React**, **Vanilla JS**
 - [**Other**](#other)
 - [**Contributing**](#contributing)
  
-
+---
 ## Installation
 
 Install Rzl Ziggy in your Laravel backend with Composer:
@@ -58,6 +58,7 @@ Add the ***`@rzlRoutes`*** Blade directive to your main layout (_before_ your ap
 
 > By default, the output of the `@rzlRoutes` Blade directive includes a list of all your application's routes and their parameters. This route list is included in the HTML of the page and can be viewed by end users. To configure which routes are included in this list, or to show and hide different routes on different pages, see [Filtering Routes](#filtering-routes).
 
+---
 ## Usage
 
 ### `route()` function
@@ -169,7 +170,7 @@ const post = { id: 1, title: 'Rzl Ziggy Stardust' };
 
 return axios.get(route('posts.show', post)).then((response) => response.data);
 ```
-
+---
 ### ⚠️ Warning: Calling `route()` Without Arguments
 
 - #### Calling `route()` without a name (or with undefined / null) can cause runtime errors when used in a string context.
@@ -184,12 +185,12 @@ return axios.get(route('posts.show', post)).then((response) => response.data);
   route(undefined)
   ```
   These patterns may throw an error, such as:
-  ```rush
-  - ❌ Uncaught TypeError: can't access property "toString", e is undefined.
+  ```js
+  - `❌ Uncaught TypeError: can't access property "toString", e is undefined.`
 
-  - `Rzl-Ziggy Error: Function `route()` was implicitly coerced to a primitive without a name.`
+  - `Rzl-Ziggy Error: Function 'route()' was implicitly coerced to a primitive without a name.`
   
-  - Rzl-Ziggy Error: route() was called without a route name and then implicitly converted to a string. This typically happens when route() is used in a string context...
+  - `Rzl-Ziggy Error: route() was called without a route name and then implicitly converted to a string. This typically happens when route() is used in a string context...`
   ```
   > ℹ️ The actual error message may vary depending on your environment or build process, but it typically happens because route() without a name returns an object that can't be coerced to a string.
 
@@ -203,6 +204,8 @@ return axios.get(route('posts.show', post)).then((response) => response.data);
   >  - route().routeParams
   >  - route().current()
   >  - route().has('route.name')
+
+---
 
 ### `Router` class
 
@@ -326,7 +329,7 @@ route('authors.photos.show', [{ id: 1, name: 'John' }, photo]);
 // 'https://rzl.test/authors/1/photos/714b19e8-ac5e-4dab-99ba-34dc6fdd24a5'
 ```
 
-### TypeScript
+### TypeScript Support
 
 Rzl Ziggy includes TypeScript type definitions, and an Artisan command that can generate additional type definitions to enable route name and parameter autocompletion.
 
@@ -358,6 +361,7 @@ If you don't have [Rzl Ziggy's NPM package installed](https://www.npmjs.com/pack
 }
 ```
 
+---
 ## JavaScript frameworks
 
 > [!NOTE]
@@ -567,6 +571,7 @@ Rzl Ziggy's `route()` function is available as an NPM package, for use in JavaSc
 
 To make your routes available on the frontend for this function to use, you can either run `php artisan rzl-ziggy:generate` and add the generated config file to your frontend project, or you can return Rzl Ziggy's config as JSON from an endpoint in your Laravel API (see [Retrieving Rzl Ziggy's config from an API endpoint](#retrieving-rzl-ziggys-config-from-an-api-endpoint) below for an example of how to set this up).
 
+---
 ## Filtering Routes
 
 Rzl Ziggy supports filtering the list of routes it outputs, which is useful if you have certain routes that you don't want to be included and visible in your HTML source.
@@ -612,6 +617,7 @@ return [
 ];
 ```
 
+---
 ## Routes File Generator
 
 ### Using JavaScript or TypeScript
@@ -738,6 +744,7 @@ mix.js('resources/js/app.js', 'public/js')
 ```
 </details>
 
+---
 ## Other
 
 ### TLS/SSL termination and trusted proxies
@@ -770,6 +777,7 @@ use RzlApp\Ziggy\RzlZiggy;
 Route::get('rzl-ziggy', fn () => response()->json(new RzlZiggy));
 ```
 
+---
 ## Contributing
 
 This project is heavily inspired by and based on [Ziggy](https://github.com/tighten/ziggy), originally developed by the team at Tighten.
@@ -787,14 +795,17 @@ This project is heavily inspired by and based on [Ziggy](https://github.com/tigh
 
 Special thanks to [Caleb Porzio](http://twitter.com/calebporzio), [Adam Wathan](http://twitter.com/adamwathan), and [Jeffrey Way](http://twitter.com/jeffrey_way) for help solidifying the idea.
 
+---
 ## Security
 
 Please review our [security policy](../../security/policy) on how to report security vulnerabilities.
 
+---
 ## License
 
 Rzl Ziggy is open-source software released under the MIT license. See [LICENSE](LICENSE) for more information.
 
+---
 ## Credits
 
 - Forked and extended from [Ziggy by Tighten.](https://github.com/tighten/ziggy)
