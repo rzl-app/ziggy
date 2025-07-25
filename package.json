@@ -14,7 +14,6 @@
   "bugs": "https://github.com/rzl-app/ziggy/issues",
   "dependencies": {
     "@types/qs": "^6.9.17",
-    "chalk": "^5.4.1",
     "qs": "~6.9.7",
     "vite-plugin-run": "^0.6.1"
   },
@@ -27,6 +26,7 @@
     "@types/babel__generator": "^7.27.0",
     "@types/babel__traverse": "^7.20.7",
     "@types/vue": "^2.0.0",
+    "chalk": "^5.4.1",
     "del-cli": "^6.0.0",
     "dts-bundle-generator": "^9.5.1",
     "esbuild": "^0.25.8",

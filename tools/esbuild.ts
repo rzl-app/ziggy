@@ -59,7 +59,7 @@ const buildAndLog = async ({
       platform,
       globalName,
       banner,
-      external: ["vite-plugin-run", "vite", "fs", "path", "chalk"],
+      external: ["vite-plugin-run", "vite", "fs", "path"],
       allowOverwrite: false
     });
     const end = Date.now();

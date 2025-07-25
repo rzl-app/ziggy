@@ -20,7 +20,7 @@ export default defineConfig([
     outDir: "dist/vite-plugin",
     clean: true,
     format: ["esm"],
-    external: ["vite-plugin-run", "vite", "fs", "path", "chalk"],
+    external: ["vite-plugin-run", "vite", "fs", "path"],
     dts: {
       resolve: true,
       only: true
