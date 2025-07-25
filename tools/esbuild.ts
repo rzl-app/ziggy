@@ -26,7 +26,7 @@ console.log(
 );
 
 const iifeFiles = globSync("src/ts/ziggy/**/*.{js,cjs,esm,mjs,ts}").filter(
-  (f) => f.includes("route.ts")
+  (f) => f.includes("browser.ts")
 );
 
 type BuildAndLog = {
@@ -73,6 +73,7 @@ const buildAndLog = async ({
 };
 
 type ConfigRoutes = Omit<BuildAndLog, "entry">[];
+
 const buildMainConfigs = [
   {
     format: "esm",
@@ -121,7 +122,7 @@ await Promise.all([
       outfile: "dist/rzl-ziggy.iife.js",
       format: "iife",
       platform: "browser",
-      globalName: "RzlZiggy",
+      // globalName: "RzlZiggy",
       banner: { js: banner }
     })
   )
