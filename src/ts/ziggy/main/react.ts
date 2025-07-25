@@ -189,7 +189,7 @@ export function useRoute(defaultConfig?: Config): ReactRouteHook {
     );
   }
 
-  // @ts-expect-error dont worry, type `ReactRouteHook` will auto detect if error types.
+  // @ts-expect-error don't worry, type `ReactRouteHook` will auto detect if error types.
   return (name?: any, params?: any, absolute?: any) =>
     route(name, params, absolute, defaultConfig);
 }
