@@ -124,5 +124,5 @@
   "type": "module",
   "types": "./dist/index.d.ts",
   "unpkg": "./dist/rzl-ziggy.iife.js",
-  "version": "1.0.56"
+  "version": "1.0.57"
 }
