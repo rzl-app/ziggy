@@ -12,14 +12,20 @@ export class Router extends String {
   constructor(
     name?: string,
     params?: RouteParams<string> | Record<string, string>,
-    absolute: boolean = true,
+    absolute: boolean = false,
     config?: RouterConfig
   ) {
     super();
 
     if (name?.toString().trim() === "") {
       throw new RoutePropsError(
-        `Invalid "name" value: cannot be an empty string. Use \`undefined\` if you don't want to provide a name, and make sure to call a valid \`Router\` method instead.`
+        `Invalid \`route()\` "name" value it cannot be an empty string. Use \`undefined\` if you don't want to provide a name. Make sure to call a valid \`Router\` instance method, or you'll encounter an error. Learn more: https://github.com/rzl-app/ziggy?#%EF%B8%8F-warning-calling-route-without-arguments.`
+      );
+    }
+
+    if (absolute != null && typeof absolute !== "boolean") {
+      throw new RoutePropsError(
+        `Invalid \`route()\` option "absolute" must be a boolean or undefined, but received type "${typeof absolute}".`
       );
     }
 
@@ -242,7 +248,7 @@ export class Router extends String {
   public has(name: string): boolean {
     if (typeof name !== "string") {
       throw new RoutePropsError(
-        `Invalid \`route().has(...)\` \`name\` property detected. Value \`name\` need string type but you passing as \`${typeof name}\`.`
+        `Invalid \`route().has(...)\` the \`name\` parameter must be a string, but received \`${typeof name}\`.`
       );
     }
     return this._config.routes.hasOwnProperty(name);
@@ -259,7 +265,7 @@ export class Router extends String {
     }
     if (params && typeof params !== "object") {
       throw new RoutePropsError(
-        `Invalid \`route().current(...)\` \`params\` property detected. Value \`params\` need object or array type but you passing as \`${typeof params}\`.`
+        `Invalid \`params\` value passed to \`route().current(...)\`, expected a object or array (e.g., { foo: "bar" } or [{"foo": "bar"}]), but received \`${typeof params}\`. Learn more: https://github.com/rzl-app/ziggy#parameters.`
       );
     }
 
@@ -322,7 +328,7 @@ export class Router extends String {
 
     if (!thisRoute) {
       throw new RoutePropsError(
-        `Function route() was called without a name and used as a string. Pass a valid route name, or use route().current() to get the current route name, or route().current('dashboard') to check if it matches. More info → https://github.com/rzl-app/ziggy?#%EF%B8%8F-warning-calling-route-without-arguments`
+        `Function route() was called without a name but used as a string. Pass a valid route name, or use route().current() to get the current route name — or route().current('dashboard') to check if it matches. More info → https://github.com/rzl-app/ziggy?#%EF%B8%8F-warning-calling-route-without-arguments`
       );
     }
 
@@ -345,7 +351,7 @@ export class Router extends String {
         Array.isArray(thisParams))
     ) {
       throw new RoutePropsError(
-        `The 'params._query' property must be a plain object.`
+        `Invalid \`params._query\` value passed to \`route()\`, expected a plain object (e.g., { foo: "bar" }), but received \`${typeof thisParams}\`.`
       );
     }
 

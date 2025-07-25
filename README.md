@@ -236,7 +236,7 @@ route().current('events.*');     // true
 route().current('events.show');  // false
 ```
 
-`route().current(...)` optionally accepts parameters as its second argument, and will check that their values also match in the current URL:
+#### `route().current(...)` optionally accepts parameters as its second argument, and will check that their values also match in the current URL:
 
 ```js
 // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
