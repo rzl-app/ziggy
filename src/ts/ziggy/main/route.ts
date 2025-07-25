@@ -1,11 +1,11 @@
-import { Router as RouterClass } from "../class/Router";
+import { Router as RouterClass } from "@/class/Router";
 import type {
   Config,
   ParameterValueProps,
   RouteParams,
   Router,
   ValidRouteName
-} from "../types";
+} from "@/types";
 
 /** -------------------------------------------------------
  * * ***Rzl Ziggy's `route()` helper.***
@@ -21,7 +21,7 @@ import type {
  * @template T - A valid route name (based on your `appRoutes` route definitions).
  *
  * @param {T} [name] - The name of the route (e.g., `"posts.show"`), defaultValue is `undefined`.
- * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (either an object or a array value), defaultValue is `undefined`.
+ * @param {RouteParams<T> | ParameterValueProps | null | undefined} [params] - Route parameters (either an `object`, `array` or `null` value), defaultValue is `undefined`.
  * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
  * @param {Config} [config] - Optional route configuration object.
  * Required only if the global `appRoutes` variable is not available.
@@ -70,13 +70,13 @@ export function route(): Router;
  * @template T - A valid route name (based on your `appRoutes` route definitions).
  *
  * @param {T} [name] - The name of the route (e.g., `"posts.show"`), defaultValue is `undefined`.
- * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (either an object or a array value), defaultValue is `undefined`.
+ * @param {RouteParams<T> | null | undefined} [params] - Route parameters (either an `object`, `array` or `null` value), defaultValue is `undefined`.
  * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
  * @param {Config} [config] - Optional route configuration object.
  * Required only if the global `appRoutes` variable is not available.
  * By default, the function will use the global `appRoutes` if present.
  *
- * @returns {string} Return `string` instance cause argument `name` is not `undefined`.
+ * @returns {string} Return `string` cause argument `name` is not `null` or `undefined`.
  *
  * @example
  * // Returns something like "/posts/123"
@@ -91,7 +91,7 @@ export function route(): Router;
 // Called with a route name and optional additional arguments - returns a URL string
 export function route<T extends ValidRouteName>(
   name: T,
-  params?: RouteParams<T> | undefined,
+  params?: RouteParams<T> | null | undefined,
   absolute?: boolean,
   config?: Config
 ): string;
@@ -109,13 +109,13 @@ export function route<T extends ValidRouteName>(
  * @template T - A valid route name (based on your `appRoutes` route definitions).
  *
  * @param {T} [name] - The name of the route (e.g., `"posts.show"`), defaultValue is `undefined`.
- * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (either an object or a array value), defaultValue is `undefined`.
+ * @param {ParameterValueProps | null | undefined} [params] - Route parameters (either an `object`, `array`, or `null` value), defaultValue is `undefined`.
  * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
  * @param {Config} [config] - Optional route configuration object.
  * Required only if the global `appRoutes` variable is not available.
  * By default, the function will use the global `appRoutes` if present.
  *
- * @returns {string} Return `string` instance cause argument `name` is not `undefined`.
+ * @returns {string} Return `string` cause argument `name` is not `null` or `undefined`.
  *
  * @example
  * // Returns something like "/posts/123"
@@ -129,7 +129,7 @@ export function route<T extends ValidRouteName>(
  */
 export function route<T extends ValidRouteName>(
   name: T,
-  params?: ParameterValueProps | undefined,
+  params?: ParameterValueProps | null | undefined,
   absolute?: boolean,
   config?: Config
 ): string;
@@ -146,14 +146,14 @@ export function route<T extends ValidRouteName>(
  *
  * @template T - A valid route name (based on your `appRoutes` route definitions).
  *
- * @param {T} [name] - The name of the route (is undefined), defaultValue is `undefined`.
- * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (because argument `name` is `undefined`, so argument params only can accept `undefined`), defaultValue is `undefined`.
+ * @param {T} [name] - The name of the route (is `null` or `undefined`), defaultValue is `undefined`.
+ * @param {null | undefined} [params] - Route parameters (because argument `name` is `undefined` or `null`, so argument params only can accept `undefined`), defaultValue is `undefined`.
  * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
  * @param {Config} [config] - Optional route configuration object.
  * Required only if the global `appRoutes` variable is not available.
  * By default, the function will use the global `appRoutes` if present.
  *
- * @returns {Router} Return `Router` instance cause argument name is `undefined`.
+ * @returns {Router} Return `Router` instance cause argument name is `null` or `undefined`.
  *
  * @example
  * // Returns Router instance like route().has(...) or router().current() ...
@@ -170,14 +170,14 @@ export function route<T extends ValidRouteName>(
  */
 // Called with configuration arguments only - returns a configured Router instance
 export function route(
-  name: undefined,
-  params?: undefined,
+  name: null | undefined,
+  params?: null | undefined,
   absolute?: boolean,
   config?: Config
 ): Router;
 export function route<T extends ValidRouteName>(
-  name?: T,
-  params?: RouteParams<T> | undefined,
+  name?: T | null,
+  params?: RouteParams<T> | ParameterValueProps | null | undefined,
   absolute: boolean = false,
   config?: Config
 ): string | Router {

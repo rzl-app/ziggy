@@ -72,9 +72,33 @@ Route::get('posts', fn (Request $request) => /* ... */)->name('posts.index');
 ```
 
 ```js
-route('posts.index'); // 'https://rzl.test/posts'
+route('posts.index');                  // ➔ '/posts'
+route('posts.index', {}, true);        // ➔ 'https://rzl.test/posts'
+route('posts.index', null, true);      // ➔ 'https://rzl.test/posts'
+route('posts.index', undefined, true); // ➔ 'https://rzl.test/posts'
 ```
 
+#### Absolute URL
+
+The third argument determines whether the generated URL should include the origin.
+By default, it is false, meaning the URL will be returned without the origin.
+To include the origin in the result, simply pass true as the third argument.
+
+> ⚠️ Passing a non-boolean value except null or undefined as the third argument will throw an error.
+
+```js
+route('posts.index');                  // ➔ '/posts'
+route('posts.index', {}, false);       // ➔ '/posts'
+route('posts.index', null, true);      // ➔ 'https://rzl.test/posts'
+route('posts.index', undefined, true); // ➔ 'https://rzl.test/posts'
+```
+> ⚠️ Passing a non-boolean value like null or undefined as the third argument will force to false.
+```js
+route('posts.index', {}, null);             // ➔ '/posts'
+route('posts.index', {}, undefined);        // ➔ '/posts'
+route('posts.index', null, undefined);      // ➔ '/posts'
+route('posts.index', undefined, undefined); // ➔ '/posts'
+```
 #### Parameters
 
 ```php
@@ -82,8 +106,18 @@ Route::get('posts/{post}', fn (Post $post) => /* ... */)->name('posts.show');
 ```
 
 ```js
-route('posts.show', [1]);         // 'https://rzl.test/posts/1'
-route('posts.show', { post: 1 }); // 'https://rzl.test/posts/1'
+route('posts.show', [1], true);                    // ➔ 'https://rzl.test/posts/1'      
+route('posts.show', [1]);                          // ➔ '/posts/1'      
+route('posts.show', [{}]);                         // ➔  Error.
+// Error: Object passed as 'post' parameter is missing route model binding key 'undefined'.
+// The first parameter (index 0) is must be passed as route parameters, e.g., { post }.
+route('posts.show', [1, { other: "test" }]);       // ➔ '/posts/1?other=test'
+route('posts.show', { post: 1 });                  // ➔ '/posts/1'
+```
+
+> ⚠️ Warning: Unknown route parameters in Laravel will be appended as query strings with empty values.
+```js
+route('posts.show', [1, "unknown-route-params"]);  // ➔ '/posts/1?unknown-route-params='      
 ```
 
 #### Multiple parameters
@@ -93,8 +127,17 @@ Route::get('venues/{venue}/events/{event}', fn (Venue $venue, Event $event) => /
 ```
 
 ```js
-route('venues.events.show', [1, 2]);                 // 'https://rzl.test/venues/1/events/2'
-route('venues.events.show', { venue: 1, event: 2 }); // 'https://rzl.test/venues/1/events/2'
+route('venues.events.show', [1, 2], true);                  // ➔ 'https://rzl.test/venues/1/events/2'
+route('venues.events.show', [1, 2]);                        // ➔ '/venues/1/events/2'
+route('venues.events.show', [1, 2,{ other: "test" }]);      // ➔ '/venues/1/events/2?other=test'
+route('venues.events.show', [1, {}]);                       // ➔ Error.  
+// Error: Object passed as 'event' parameter is missing route model binding key 'undefined'.
+// The second parameter (index 1) is must be passed as route parameters, e.g., { event }.
+route('venues.events.show', { venue: 1, event: 2 });        // ➔ '/venues/1/events/2'
+```
+> ⚠️ Warning: Unknown route parameters in Laravel will be appended as query strings with empty values.
+```js
+route('venues.events.show', [1, 2,"unknown-route-params"]); // ➔ '/venues/1/events/2?unknown-route-params='
 ```
 
 #### Query parameters
@@ -112,7 +155,15 @@ route('venues.events.show', {
     page: 5,
     count: 10,
 });
-// 'https://rzl.test/venues/1/events/2?page=5&count=10'
+// '/venues/1/events/2?page=5&count=10'
+route('venues.events.show', {
+    venue: 1,
+    event: 2,
+    page: 5,
+    count: 10,
+    type: "active"
+}, true);
+// 'https://rzl.test/venues/1/events/2?page=5&count=10&type=active'
 ```
 
 If you need to pass a query parameter with the same name as a route parameter, nest it under the special `_query` key:
@@ -126,7 +177,18 @@ route('venues.events.show', {
         page: 5,
     },
 });
-// 'https://rzl.test/venues/1/events/2?event=3&page=5'
+// '/venues/1/events/2?event=3&page=5'
+route('venues.events.show', {
+    venue: 1,
+    event: 2,
+    type: "disable"
+    _query: {
+        event: 3,
+        page: 5,
+        type: "active",
+    },
+}, true);
+// 'https://rzl.test/venues/1/events/2?event=3&page=5&type=active'
 ```
 
 Like Laravel, Rzl Ziggy automatically encodes boolean query parameters as integers in the query string:
@@ -139,8 +201,18 @@ route('venues.events.show', {
         draft: false,
         overdue: true,
     },
-});
+}, true);
 // 'https://rzl.test/venues/1/events/2?draft=0&overdue=1'
+route('venues.events.show', {
+    venue: 1,
+    event: 2,
+    active: true,
+    _query: {
+        draft: false,
+        overdue: true,
+    },
+});
+// '/venues/1/events/2?active=1&draft=0&overdue=1'
 ```
 
 #### Default parameter values
@@ -158,7 +230,8 @@ URL::defaults(['locale' => $request->user()->locale ?? 'de']);
 ```
 
 ```js
-route('posts.show', { post: 1 }); // 'https://rzl.test/de/posts/1'
+route('posts.show', { post: 1 }, true);           // ➔ 'https://rzl.test/de/posts/1'
+route('posts.show', { post: 5, type: "active" }); // ➔ '/de/posts/5?type=active'
 ```
 
 #### Examples
@@ -186,7 +259,7 @@ return axios.get(route('posts.show', post)).then((response) => response.data);
   ```
   These patterns may throw an error, such as:
   ```js
-  - `❌ Uncaught TypeError: can't access property "toString", e is undefined.`
+  - `Uncaught TypeError: can't access property "toString", e is undefined.`
 
   - `Rzl-Ziggy Error: Function 'route()' was implicitly coerced to a primitive without a name.`
 
@@ -230,10 +303,10 @@ Calling Rzl Ziggy's `route()` function with no arguments will return an instance
 // Laravel route called 'events.index' with URI '/events'
 // Current window URL is https://rzl.test/events
 
-route().current();               // 'events.index'
-route().current('events.index'); // true
-route().current('events.*');     // true
-route().current('events.show');  // false
+route().current();               // ➔ 'events.index'
+route().current('events.index'); // ➔ true
+route().current('events.*');     // ➔ true
+route().current('events.show');  // ➔ false
 ```
 
 #### `route().current(...)` optionally accepts parameters as its second argument, and will check that their values also match in the current URL:
@@ -242,10 +315,24 @@ route().current('events.show');  // false
 // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
 // Current window URL is https://myapp.com/venues/1/events/2?hosts=all
 
-route().current('venues.events.show', { venue: 1 });           // true
-route().current('venues.events.show', { venue: 1, event: 2 }); // true
-route().current('venues.events.show', { hosts: 'all' });       // true
-route().current('venues.events.show', { venue: 6 });           // false
+route().current('venues.events.show', [1]);                        // ➔ true
+route().current('venues.events.show', [6]);                        // ➔ false
+route().current('venues.events.show', [1, 5]);                     // ➔ false
+route().current('venues.events.show', [1, 2]);                     // ➔ true
+route().current('venues.events.show', [1, { hosts:'all' }]);       // ➔ Error
+//* Error: Object passed as 'event' parameter is missing route model binding key 'undefined'.
+//* Error: (Cause array index 1 is must passing as routeParams, aka: {event}). 
+route().current('venues.events.show', [1, 2, { hosts:'all' }]);    // ➔ true
+route().current('venues.events.show', [2, 2, { hosts:'all' }]);    // ➔ false
+route().current('venues.events.show', [1, { hosts:'single' }]);    // ➔ Error 
+//* Error: Object passed as 'event' parameter is missing route model binding key 'undefined'.
+//* Error: (Cause array index 1 is must passing as routeParams, aka: {event}).
+route().current('venues.events.show', [1, 5, { hosts:'single' }]); // ➔ false
+route().current('venues.events.show', [2, 2, { hosts:'all' }]);    // ➔ false
+route().current('venues.events.show', { venue: 1 });               // ➔ true
+route().current('venues.events.show', { venue: 1, event: 2 });     // ➔ true
+route().current('venues.events.show', { hosts: 'all' });           // ➔ true
+route().current('venues.events.show', { venue: 6 });               // ➔ false
 ```
 
 #### Check if a route exists: `route().has(...)`
@@ -253,8 +340,8 @@ route().current('venues.events.show', { venue: 6 });           // false
 ```js
 // Laravel app has only one named route, 'home'
 
-route().has('home');   // true
-route().has('orders'); // false
+route().has('home');   // => true
+route().has('orders'); // => false
 ```
 
 #### Retrieve the current route params: `route().params`
@@ -263,7 +350,7 @@ route().has('orders'); // false
 // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
 // Current window URL is https://myapp.com/venues/1/events/2?hosts=all
 
-route().params; // { venue: '1', event: '2', hosts: 'all' }
+route().params; // ➔ { venue: '1', event: '2', hosts: 'all' }
 ```
 
 > Note: parameter values retrieved with `route().params` will always be returned as strings.
@@ -274,7 +361,7 @@ route().params; // { venue: '1', event: '2', hosts: 'all' }
 // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
 // Current window URL is https://myapp.com/venues/1/events/2?hosts=all&type=test
 
-route().routeParams; // { venue: '1', event: '2' }
+route().routeParams; // ➔ { venue: '1', event: '2' }
 ```
 
 > Note: parameter values retrieved with `route().routeParams` will always be returned as strings.
@@ -285,7 +372,7 @@ route().routeParams; // { venue: '1', event: '2' }
 // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
 // Current window URL is https://myapp.com/venues/1/events/2?hosts=all&type=test
 
-route().queryParams; // { hosts: 'all', type: 'test' }
+route().queryParams; // ➔ { hosts: 'all', type: 'test' }
 ```
 
 > Note: parameter values retrieved with `route().queryParams` will always be returned as strings.
@@ -322,7 +409,8 @@ const post = {
 
 // Rzl Ziggy knows that this route uses the 'slug' route-model binding key:
 
-route('posts.show', post); // 'https://rzl.test/blog/introducing-rzl-ziggy-v1'
+route('posts.show', post);       // ➔ '/blog/introducing-rzl-ziggy-v1'
+route('posts.show', post, true); // ➔ 'https://rzl.test/blog/introducing-rzl-ziggy-v1'
 ```
 
 Rzl Ziggy also supports [custom keys](https://laravel.com/docs/routing#customizing-the-key) for scoped bindings declared directly in a route definition:
@@ -338,7 +426,7 @@ const photo = {
     filename: 'sunset.jpg',
 }
 
-route('authors.photos.show', [{ id: 1, name: 'John' }, photo]);
+route('authors.photos.show', [{ id: 1, name: 'John' }, photo], true);
 // 'https://rzl.test/authors/1/photos/714b19e8-ac5e-4dab-99ba-34dc6fdd24a5'
 ```
 
@@ -469,6 +557,7 @@ This means:
 import { route } from '../../vendor/rzl-app/ziggy';
 import { appRoutes } from './routes/index.js';
 
+route('home', null, false, JSON.parse(appRoutes));
 route('home', undefined, undefined, JSON.parse(appRoutes));
 ```
 

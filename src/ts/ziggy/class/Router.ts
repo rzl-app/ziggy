@@ -1,17 +1,21 @@
 import { stringify } from "qs";
+import { CONFIG } from "@ts/utils/links";
 import RouteFactory from "./RouteFactory";
-import { RouterConfigClass } from "./RouterClass";
+import { RouterConfigClass } from "./RouterConfigClass";
 import { prefixError, RoutePropsError, RouterConfigError } from "./exceptions";
-import type { ParsedQs, RouteParams, RouterConfig } from "../types";
+
+import type { ParsedQs, RouteParams, RouterConfig } from "@/types";
+
+const { REPO } = CONFIG;
 
 export class Router extends String {
   private _config: RouterConfig;
   private _route: RouteFactory | undefined;
-  private _params: Record<string, unknown> = {};
+  private _params: null | Record<string, unknown> = {};
 
   constructor(
-    name?: string,
-    params?: RouteParams<string> | Record<string, string>,
+    name?: string | null,
+    params?: null | RouteParams<string> | Record<string, string>,
     absolute: boolean = false,
     config?: RouterConfig
   ) {
@@ -19,15 +23,19 @@ export class Router extends String {
 
     if (name?.toString().trim() === "") {
       throw new RoutePropsError(
-        `Invalid \`route()\` "name" value it cannot be an empty string. Use \`undefined\` if you don't want to provide a name. Make sure to call a valid \`Router\` instance method, or you'll encounter an error. Learn more: https://github.com/rzl-app/ziggy?#%EF%B8%8F-warning-calling-route-without-arguments.`
+        `Invalid \`route()\` "name" value it cannot be an empty string. Use \`undefined\` if you don't want to provide a name. Make sure to call a valid \`Router\` instance method, or you'll encounter an error. Learn more: ${REPO.LINK}#%EF%B8%8F-warning-calling-route-without-arguments.`
       );
     }
 
     if (absolute != null && typeof absolute !== "boolean") {
       throw new RoutePropsError(
-        `Invalid \`route()\` option "absolute" must be a boolean or undefined, but received type "${typeof absolute}".`
+        `Invalid \`route()\` option "absolute" must be a boolean or undefined, but received type "${typeof absolute}". Learn more: ${REPO.LINK}#absolute-url.`
       );
     }
+
+    // Ensure the value is a boolean.
+    // Defensive fallback in case user passes `null` or `undefined`.
+    absolute = !!absolute;
 
     const _config = this.safeValidateRouterConfig(
       config ||
@@ -124,30 +132,31 @@ export class Router extends String {
   }
 
   private _parse(
-    params: RouteParams<string> | Record<string, string> = {},
+    params: null | RouteParams<string> | Record<string, string> = {},
     route: typeof this._route = this._route
   ): Record<string, string> {
-    if (typeof params !== "undefined" && typeof params !== "object") {
+    if (params != null && typeof params !== "object") {
       throw new RoutePropsError(
-        `Invalid \`route()\` \`params\` property detected. Value \`params\` need object or array type but you passing as \`${typeof params}\`.`
+        `Invalid \`route()\` \`params\` property detected. Value \`params\` need object or array type but you passing as \`${typeof params}\`. More info → ${REPO.LINK}#parameters`
       );
     }
 
+    // Fallback: if `params` is `null` or `undefined`, assign an empty object
     params ??= {};
 
     params = (
       ["string", "number"].includes(typeof params) ? [params] : params
     ) as Record<string, string>;
 
-    const segments =
-      route?.parameterSegments.filter(
-        ({ name }) => !this._config.defaults[name]
-      ) || [];
+    // Separate segments with and without defaults, and fill in the default values
+    const segments = route?.parameterSegments.filter(
+      ({ name }) => !this._config.defaults[name]
+    );
 
     if (Array.isArray(params)) {
       params = params.reduce(
         (result: Record<string, string>, current: Record<string, string>, i) =>
-          segments[i]
+          segments?.[i]
             ? { ...result, [segments[i].name]: current }
             : typeof current === "object"
               ? { ...result, ...current }
@@ -155,12 +164,12 @@ export class Router extends String {
         {}
       );
     } else if (
-      segments.length === 1 &&
-      !params[segments[0].name] &&
+      segments?.length === 1 &&
+      !params[segments?.[0].name] &&
       ((route && params.hasOwnProperty(Object.values(route.bindings)[0])) ||
         params.hasOwnProperty("id"))
     ) {
-      params = { [segments[0].name]: params };
+      params = { [segments?.[0].name]: params };
     }
 
     return {
@@ -169,23 +178,21 @@ export class Router extends String {
     };
   }
 
-  private _defaults(route: typeof this._route): Record<string, string> {
-    return (
-      route?.parameterSegments
-        .filter(({ name }) => this._config.defaults[name])
-        .reduce(
-          (result, { name }, i) => ({
-            ...result,
-            [name]: this._config.defaults[name]
-          }),
-          {}
-        ) || {}
-    );
+  private _defaults(route: typeof this._route = this._route) {
+    return route?.parameterSegments
+      .filter(({ name }) => this._config.defaults[name])
+      .reduce(
+        (result, { name }) => ({
+          ...result,
+          [name]: this._config.defaults[name]
+        }),
+        {}
+      );
   }
 
   private _substituteBindings(
     params: Record<string, string | Record<string, string>>,
-    route: typeof this._route
+    route: typeof this._route = this._route
   ): Record<string, string> {
     return Object.entries(params).reduce((result, [key, value]) => {
       if (
@@ -197,12 +204,12 @@ export class Router extends String {
         return { ...result, [key]: value };
       }
 
-      if (route.bindings && !value.hasOwnProperty(route.bindings[key])) {
+      if (!value.hasOwnProperty(route.bindings[key])) {
         if (value.hasOwnProperty("id")) {
           route.bindings[key] = "id";
         } else {
           throw new RoutePropsError(
-            `Object passed as '${key}' parameter is missing route model binding key '${route.bindings[key]}'.`
+            `Object passed as '${key}' parameter is missing route model binding key '${route.bindings[key]}'. More info → ${REPO.LINK}#parameters`
           );
         }
       }
@@ -256,7 +263,7 @@ export class Router extends String {
 
   public current(
     name?: string,
-    params: Record<string, string> = {}
+    params: null | Record<string, string> = {}
   ): boolean | string | undefined {
     if (name && typeof name !== "string") {
       throw new RoutePropsError(
@@ -265,9 +272,12 @@ export class Router extends String {
     }
     if (params && typeof params !== "object") {
       throw new RoutePropsError(
-        `Invalid \`params\` value passed to \`route().current(...)\`, expected a object or array (e.g., { foo: "bar" } or [{"foo": "bar"}]), but received \`${typeof params}\`. Learn more: https://github.com/rzl-app/ziggy#parameters.`
+        `Invalid \`params\` value passed to \`route().current(...)\`, expected a object or array (e.g., { foo: "bar" } or [{"foo": "bar"}]), but received \`${typeof params}\`. Learn more: ${REPO.LINK}#routecurrent-optionally-accepts-parameters-as-its-second-argument-and-will-check-that-their-values-also-match-in-the-current-url.`
       );
     }
+
+    params ??= {};
+    params ??= {};
 
     const {
       name: current,
@@ -325,49 +335,48 @@ export class Router extends String {
 
   public toString(): string {
     const thisRoute = this._route;
+    const thisParams = (this._params ??= {});
 
     if (!thisRoute) {
       throw new RoutePropsError(
-        `Function route() was called without a name but used as a string. Pass a valid route name, or use route().current() to get the current route name — or route().current('dashboard') to check if it matches. More info → https://github.com/rzl-app/ziggy?#%EF%B8%8F-warning-calling-route-without-arguments`
+        `Function route() was called without a name but used as a string. Pass a valid route name, or use route().current() to get the current route name — or route().current('dashboard') to check if it matches. More info → ${REPO.LINK}#%EF%B8%8F-warning-calling-route-without-arguments`
       );
     }
 
-    const unhandled = Object.keys(this._params)
+    const unhandled = Object.keys(thisParams)
       .filter(
         (key) => !thisRoute.parameterSegments.some(({ name }) => name === key)
       )
       .filter((key) => key !== "_query")
       .reduce(
-        (result, current) => ({ ...result, [current]: this._params[current] }),
+        (result, current) => ({ ...result, [current]: thisParams[current] }),
         {}
       );
 
-    const thisParams = this._params["_query"];
+    const thisParamsQuery = thisParams["_query"] || {};
 
     if (
-      thisParams !== undefined &&
-      (typeof thisParams !== "object" ||
-        thisParams === null ||
-        Array.isArray(thisParams))
+      thisParamsQuery !== undefined &&
+      (typeof thisParamsQuery !== "object" ||
+        thisParamsQuery === null ||
+        Array.isArray(thisParamsQuery))
     ) {
       throw new RoutePropsError(
-        `Invalid \`params._query\` value passed to \`route()\`, expected a plain object (e.g., { foo: "bar" }), but received \`${typeof thisParams}\`.`
+        `Invalid \`params._query\` value passed to \`route()\`, expected a plain object (e.g., { foo: "bar" }), but received \`${typeof thisParamsQuery}\`. More info → ${REPO.LINK}#query-parameters`
       );
     }
 
     return (
-      thisRoute.compile(this._params) +
+      thisRoute.compile(this._params || {}) +
       stringify(
-        { ...unhandled, ...thisParams },
+        { ...unhandled, ...thisParamsQuery },
         {
           addQueryPrefix: true,
           arrayFormat: "indices",
           encodeValuesOnly: true,
           skipNulls: true,
           encoder: (value, encoder) =>
-            typeof value === "boolean"
-              ? (Number(value) as unknown as string)
-              : encoder(value)
+            typeof value === "boolean" ? String(+value) : encoder(value)
         }
       )
     );

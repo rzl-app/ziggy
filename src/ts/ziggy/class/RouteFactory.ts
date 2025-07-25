@@ -1,5 +1,9 @@
 import { parse } from "qs";
-import type { RouteConfig, RouteDefinition, UnknownObject } from "../types";
+import type {
+  RouteFactoryConfig,
+  RouteDefinition,
+  UnknownObject
+} from "../types";
 import { RoutePropsError, RouterConfigError } from "./exceptions";
 
 /** ---------------------------------
@@ -8,14 +12,14 @@ import { RoutePropsError, RouterConfigError } from "./exceptions";
 export default class RouteFactory {
   private name: string;
   private definition?: RouteDefinition;
-  private config?: RouteConfig;
+  private config?: RouteFactoryConfig;
   private wheres: UnknownObject;
-  public bindings: Record<string, string>;
+  public bindings: Record<string, string> = {};
 
   public constructor(
     name: string,
     definition?: RouteDefinition,
-    config?: RouteConfig
+    config?: RouteFactoryConfig
   ) {
     this.name = name;
     this.definition = definition;

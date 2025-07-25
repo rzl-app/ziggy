@@ -1,4 +1,5 @@
 import type { ComponentOptions, App as Vue3App } from "vue";
+
 import type {
   Config,
   ParameterValue,
@@ -6,9 +7,9 @@ import type {
   RouteParams,
   Router,
   ValidRouteName
-} from "../types";
+} from "@/types";
 
-import { route } from "../index";
+import { route } from "@/index";
 
 interface Vue2CompatApp {
   version: string;
@@ -48,7 +49,7 @@ export const rzlZiggyVue = {
      * @template T - A valid route name (based on your `appRoutes` route definitions).
      *
      * @param {T} [name] - The name of the route (e.g., `"posts.show"`), defaultValue is `undefined`.
-     * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (either an object or a array value), defaultValue is `undefined`.
+     * @param {RouteParams<T> | ParameterValueProps | null | undefined} [params] - Route parameters (either an `object`, `array` or `null` value), defaultValue is `undefined`.
      * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
      *
      * @returns {string | Router} A generated URL string or a `Router` instance, depend of `name` argument.
@@ -95,10 +96,10 @@ export const rzlZiggyVue = {
      * @template T - A valid route name (based on your `appRoutes` route definitions).
      *
      * @param {T} [name] - The name of the route (e.g., `"posts.show"`), defaultValue is `undefined`.
-     * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (either an object or a array value), defaultValue is `undefined`.
+     * @param {RouteParams<T> | null | undefined} [params] - Route parameters (either an `object`, `array` or `null` value), defaultValue is `undefined`.
      * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
      *
-     * @returns {string} Return `string` instance cause argument `name` is not `undefined`.
+     * @returns {string} Return `string` cause argument `name` is not `null` or `undefined`.
      *
      * @example
      * // Returns something like "/posts/123"
@@ -112,7 +113,7 @@ export const rzlZiggyVue = {
      */
     function rt<T extends ValidRouteName>(
       name: T,
-      params?: RouteParams<T> | undefined,
+      params?: RouteParams<T> | null | undefined,
       absolute?: boolean
     ): string;
     /** -------------------------------------------------------
@@ -131,10 +132,10 @@ export const rzlZiggyVue = {
      * @template T - A valid route name (based on your `appRoutes` route definitions).
      *
      * @param {T} [name] - The name of the route (e.g., `"posts.show"`), defaultValue is `undefined`.
-     * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (either an object or a array value), defaultValue is `undefined`.
+     * @param {ParameterValueProps | null | undefined} [params] - Route parameters (either an `object`, `array`, or `null` value), defaultValue is `undefined`.
      * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
      *
-     * @returns {string} Return `string` instance cause argument `name` is not `undefined`.
+     * @returns {string} Return `string` cause argument `name` is not `null` or `undefined`.
      *
      * @example
      * // Returns something like "/posts/123"
@@ -148,9 +149,8 @@ export const rzlZiggyVue = {
      */
     function rt<T extends ValidRouteName>(
       name: T,
-      params?: ParameterValueProps | undefined,
-      absolute?: boolean,
-      config?: Config
+      params?: ParameterValueProps | null | undefined,
+      absolute?: boolean
     ): string;
     /** -------------------------------------------------------
      * * ***Rzl Ziggy's `route()` from `rzlZiggyVue` helper.***
@@ -167,11 +167,11 @@ export const rzlZiggyVue = {
      *
      * @template T - A valid route name (based on your `appRoutes` route definitions).
      *
-     * @param {T} [name] - The name of the route (is undefined), defaultValue is `undefined`.
-     * @param {RouteParams<T> | ParameterValue} [params] - Route parameters (because argument `name` is `undefined`, so argument params only can accept `undefined`), defaultValue is `undefined`.
+     * @param {T} [name] - The name of the route (is `null` or `undefined`), defaultValue is `undefined`.
+     * @param {null | undefined} [params] - Route parameters (because argument `name` is `undefined` or `null`, so argument params only can accept `undefined`), defaultValue is `undefined`.
      * @param {boolean} [absolute=false] - Whether to return an absolute URL (includes scheme and host), defaultValue is `false`.
      *
-     * @returns {Router} Return `Router` instance cause argument name is `undefined`.
+     * @returns {Router} Return `Router` instance cause argument name is `null` or `undefined`.
      *
      * @example
      * // Returns Router instance like route().has(...) or router().current() ...
@@ -187,13 +187,13 @@ export const rzlZiggyVue = {
      * @see [More Docs see: route() function.](https://github.com/rzl-app/ziggy?tab=readme-ov-file#route-function)
      */
     function rt(
-      name: undefined,
-      params?: undefined,
+      name: null | undefined,
+      params?: null | undefined,
       absolute?: boolean
     ): Router;
     function rt<T extends ValidRouteName>(
-      name?: T,
-      params?: RouteParams<T> | ParameterValue | undefined,
+      name?: T | null,
+      params?: RouteParams<T> | ParameterValue | null | undefined,
       absolute?: boolean
     ): Router | string {
       return route(name as T, params as any, absolute, options);

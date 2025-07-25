@@ -1,4 +1,4 @@
-import { route as routerFn } from "../main/route";
+import { route as routerFn } from "@/main/route";
 
 declare global {
   var appRoutes: Record<string, unknown> | undefined;

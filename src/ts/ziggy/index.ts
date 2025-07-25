@@ -1,6 +1,6 @@
-import { route } from "./main/route";
-import { useRoute } from "./main/react";
-import { rzlZiggyVue } from "./main/vue";
+import { route } from "@/main/route";
+import { useRoute } from "@/main/react";
+import { rzlZiggyVue } from "@/main/vue";
 
 export { route, useRoute, rzlZiggyVue };
 
@@ -12,11 +12,11 @@ export type {
   ParsedQs,
   RawParameterValue,
   RouteDefinition,
-  RouteConfig,
+  RouteFactoryConfig,
   RouteList,
   RouteName,
   RouteParams,
   Router,
   TypeConfig,
   ValidRouteName
-} from "./types";
+} from "@/types";

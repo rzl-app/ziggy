@@ -165,7 +165,7 @@ export type RouteDefinition = {
 };
 
 /** -------------------------------------------------------
- * * ***Rzl Ziggy's config object.***
+ * * ***Rzl Ziggy's config props for `route()`.***
  * -------------------------------------------------------
  */
 export type Config = {
@@ -200,14 +200,14 @@ export type Router = {
    *  // Laravel route called 'events.index' with URI '/events'
    *  // Current window URL is https://ziggy.test/events
    *
-   *  route().current(); // 'events.index'
+   *  route().current(); // ➔ 'events.index'
    *
    * @example
    *
    *  // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
    *  // Current window URL is https://myapp.com/venues/1/events/2?hosts=all
    *
-   *  route().current(); // 'venues.events.show'
+   *  route().current(); // ➔ 'venues.events.show'
    *
    * @see [Check rzl-app-ziggy the current route: `route().current()`](https://github.com/rzl-app/ziggy#check-the-current-route-routecurrent)
    *
@@ -221,9 +221,9 @@ export type Router = {
    *  // Laravel route called 'events.index' with URI '/events'
    *  // Current window URL is https://ziggy.test/events
    *
-   *  route().current('events.index'); // true
-   *  route().current('events.*');     // true
-   *  route().current('events.show');  // false
+   *  route().current('events.index'); // ➔ true
+   *  route().current('events.*');     // ➔ true
+   *  route().current('events.show');  // ➔ false
    *
    * @example
    *
@@ -232,17 +232,17 @@ export type Router = {
    *  // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
    *  // Current window URL is https://myapp.com/venues/1/events/2?hosts=all
    *
-   *  route().current('venues.events.show', { venue: 1 });           // true
-   *  route().current('venues.events.show', { venue: 1, event: 2 }); // true
-   *  route().current('venues.events.show', { hosts: 'all' });       // true
-   *  route().current('venues.events.show', { venue: 6 });           // false
+   *  route().current('venues.events.show', { venue: 1 });           // ➔ true
+   *  route().current('venues.events.show', { venue: 1, event: 2 }); // ➔ true
+   *  route().current('venues.events.show', { hosts: 'all' });       // ➔ true
+   *  route().current('venues.events.show', { venue: 6 });           // ➔ false
    *
    * @see [Check rzl-app-ziggy the current route: `route().current(...)`](https://github.com/rzl-app/ziggy#check-the-current-route-routecurrent)
    *
    */
   current<T extends RouteName>(
     name: T,
-    params?: ParameterValueProps | RouteParams<T>
+    params?: RouteParams<T> | ParameterValueProps | null
   ): boolean;
   /** ---------------------------------------------
    * * ***Retrieve the current route with all params (query search params and laravel route params): `route().params`***
@@ -252,7 +252,7 @@ export type Router = {
    *  // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
    *  // Current window URL is https://myapp.com/venues/1/events/2?hosts=all&type=test
    *
-   *  route().params; // { venue: '1', event: '2', hosts: 'all', type: 'test' }
+   *  route().params; // ➔ { venue: '1', event: '2', hosts: 'all', type: 'test' }
    *
    * @see [Retrieve the current route with all params (query search params and laravel route params): `route().params`](https://github.com/rzl-app/ziggy?tab=readme-ov-file#retrieve-the-current-route-params-routeparams)
    *
@@ -266,7 +266,7 @@ export type Router = {
    *  // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
    *  // Current window URL is https://myapp.com/venues/1/events/2?hosts=all&type=test
    *
-   *  route().routeParams; // { venue: '1', event: '2' }
+   *  route().routeParams; // ➔ { venue: '1', event: '2' }
    *
    * @see [Retrieve only params route in laravel route (except query search params) in the current route: `route().routeParams`](https://github.com/rzl-app/ziggy?tab=readme-ov-file#retrieve-only-params-route-in-laravel-route-except-query-search-params-in-the-current-route-routerouteparams)
    */
@@ -279,7 +279,7 @@ export type Router = {
    *  // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
    *  // Current window URL is https://myapp.com/venues/1/events/2?hosts=all&type=test
    *
-   *  route().queryParams; // { hosts: 'all', type: 'test' }
+   *  route().queryParams; // ➔ { hosts: 'all', type: 'test' }
    *
    * @see [Retrieve all search query params only (except params route in laravel route) in the current route: `route().queryParams`](https://github.com/rzl-app/ziggy?tab=readme-ov-file#retrieve-all-search-query-params-only-except-params-route-in-laravel-route-in-the-current-route-routequeryparams)
    */
@@ -291,8 +291,8 @@ export type Router = {
    *
    *  // Laravel app has only one named route, 'home'
    *
-   *  route().has('home');   // true
-   *  route().has('orders'); // false
+   *  route().has('home');   // ➔ true
+   *  route().has('orders'); // ➔ false
    *
    * @see [Check rzl-app-ziggy if a route exists: `route().has(...)`](https://github.com/rzl-app/ziggy#check-if-a-route-exists-routehas)
    *
@@ -300,21 +300,31 @@ export type Router = {
   has<T extends ValidRouteName>(name: T): boolean;
 };
 
-/** ------------------------------------------------------- */
-export type RouteConfig = {
+/** -------------------------------------------------------
+ * * ***Types For RouteFactory Class.***
+ * -------------------------------------------------------
+ */
+export type RouteFactoryConfig = {
   url: string;
   port: number | null;
   absolute?: boolean;
   defaults: Record<string, RawParameterValue>;
   routes: Record<string, RouteDefinition>;
-  location?: { host?: string; pathname?: string; search?: string };
+  location?: {
+    host?: string;
+    pathname?: string;
+    search?: string;
+  };
 };
 
-/** ------------------------------------------------------- */
+/** -------------------------------------------------------
+ * * ***Types For RouterConfig Class.***
+ * -------------------------------------------------------
+ */
 export type RouterConfig = {
-  absolute?: boolean;
   url: string;
   port: number | null;
+  absolute?: boolean;
   defaults: Record<string, RawParameterValue>;
   routes: Record<string, RouteDefinition>;
   location?: {
