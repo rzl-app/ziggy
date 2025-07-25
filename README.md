@@ -127,17 +127,17 @@ Route::get('venues/{venue}/events/{event}', fn (Venue $venue, Event $event) => /
 ```
 
 ```js
-route('venues.events.show', [1, 2], true);                  // ➔ 'https://rzl.test/venues/1/events/2'
-route('venues.events.show', [1, 2]);                        // ➔ '/venues/1/events/2'
-route('venues.events.show', [1, 2,{ other: "test" }]);      // ➔ '/venues/1/events/2?other=test'
-route('venues.events.show', [1, {}]);                       // ➔ Error.  
+route('venues.events.show', [1, 2], true);                   // ➔ 'https://rzl.test/venues/1/events/2'
+route('venues.events.show', [1, 2]);                         // ➔ '/venues/1/events/2'
+route('venues.events.show', [1, 2, { other: "test" }]);      // ➔ '/venues/1/events/2?other=test'
+route('venues.events.show', [1, {}]);                        // ➔ Error.  
 // Error: Object passed as 'event' parameter is missing route model binding key 'undefined'.
 // The second parameter (index 1) is must be passed as route parameters, e.g., { event }.
-route('venues.events.show', { venue: 1, event: 2 });        // ➔ '/venues/1/events/2'
+route('venues.events.show', { venue: 1, event: 2 });         // ➔ '/venues/1/events/2'
 ```
 > ⚠️ Warning: Unknown route parameters in Laravel will be appended as query strings with empty values.
 ```js
-route('venues.events.show', [1, 2,"unknown-route-params"]); // ➔ '/venues/1/events/2?unknown-route-params='
+route('venues.events.show', [1, 2, "unknown-route-params"]); // ➔ '/venues/1/events/2?unknown-route-params='
 ```
 
 #### Query parameters
@@ -319,16 +319,16 @@ route().current('venues.events.show', [1]);                        // ➔ true
 route().current('venues.events.show', [6]);                        // ➔ false
 route().current('venues.events.show', [1, 5]);                     // ➔ false
 route().current('venues.events.show', [1, 2]);                     // ➔ true
-route().current('venues.events.show', [1, { hosts:'all' }]);       // ➔ Error
+route().current('venues.events.show', [1, { hosts: 'all' }]);      // ➔ Error
 //* Error: Object passed as 'event' parameter is missing route model binding key 'undefined'.
 //* Error: (Cause array index 1 is must passing as routeParams, aka: {event}). 
-route().current('venues.events.show', [1, 2, { hosts:'all' }]);    // ➔ true
-route().current('venues.events.show', [2, 2, { hosts:'all' }]);    // ➔ false
-route().current('venues.events.show', [1, { hosts:'single' }]);    // ➔ Error 
+route().current('venues.events.show', [1, 2, { hosts: 'all' }]);   // ➔ true
+route().current('venues.events.show', [2, 2, { hosts: 'all' }]);   // ➔ false
+route().current('venues.events.show', [1, { hosts: 'single' }]);   // ➔ Error 
 //* Error: Object passed as 'event' parameter is missing route model binding key 'undefined'.
 //* Error: (Cause array index 1 is must passing as routeParams, aka: {event}).
-route().current('venues.events.show', [1, 5, { hosts:'single' }]); // ➔ false
-route().current('venues.events.show', [2, 2, { hosts:'all' }]);    // ➔ false
+route().current('venues.events.show', [1, 5, { hosts: 'single' }]);// ➔ false
+route().current('venues.events.show', [2, 2, { hosts: 'all' }]);   // ➔ false
 route().current('venues.events.show', { venue: 1 });               // ➔ true
 route().current('venues.events.show', { venue: 1, event: 2 });     // ➔ true
 route().current('venues.events.show', { hosts: 'all' });           // ➔ true
@@ -349,11 +349,15 @@ route().has('orders'); // => false
 ```js
 // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
 // Current window URL is https://myapp.com/venues/1/events/2?hosts=all
-
-route().params; // ➔ { venue: '1', event: '2', hosts: 'all' }
+ 
+const test = route().params;
+console.log(test)         // ➔ { venue: '1', event: '2', hosts: 'all' }
+console.log(test.venue)   // ➔ "1"
+console.log(test.hosts)   // ➔ "all"
+console.log(test.other)   // ➔ undefined
 ```
 
-> Note: parameter values retrieved with `route().params` will always be returned as strings.
+> Note: parameter values retrieved with `route().params` will always be returned as strings or undefined.
 
 #### Retrieve only params route in laravel route (except query search params) in the current route: `route().routeParams`
 
@@ -361,21 +365,31 @@ route().params; // ➔ { venue: '1', event: '2', hosts: 'all' }
 // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
 // Current window URL is https://myapp.com/venues/1/events/2?hosts=all&type=test
 
-route().routeParams; // ➔ { venue: '1', event: '2' }
+const test = route().routeParams;
+console.log(test)         // ➔ { venue: '1', event: '2' }
+console.log(test.venue)   // ➔ "1"
+console.log(test.hosts)   // ➔ undefined
+console.log(test.other)   // ➔ undefined
+
 ```
 
-> Note: parameter values retrieved with `route().routeParams` will always be returned as strings.
+> Note: parameter values retrieved with `route().routeParams` will always be returned as strings or undefined.
 
 #### Retrieve all search query params only (except params route in laravel route) in the current route: `route().queryParams`
 
 ```js
 // Laravel route called 'venues.events.show' with URI '/venues/{venue}/events/{event}'
 // Current window URL is https://myapp.com/venues/1/events/2?hosts=all&type=test
-
-route().queryParams; // ➔ { hosts: 'all', type: 'test' }
+ 
+const test = route().queryParams;
+console.log(test)         // ➔ { hosts: 'all', type: 'test' }
+console.log(test.type)    // ➔ "test"
+console.log(test.hosts)   // ➔ "all"
+console.log(test.venue)   // ➔ undefined
+console.log(test.other)   // ➔ undefined
 ```
 
-> Note: parameter values retrieved with `route().queryParams` will always be returned as strings.
+> Note: parameter values retrieved with `route().queryParams` will always be returned as strings or undefined.
 
 ### Route-model binding
 
@@ -719,6 +733,24 @@ return [
 ];
 ```
 
+Then, you can expose a specific group by passing the group name into the `@rzlRoutes` Blade directive:
+
+```blade
+{{-- authors.blade.php --}}
+
+@rzlRoutes('author')
+```
+
+To expose multiple groups you can pass an array of group names:
+
+```blade
+{{-- admin.blade.php --}}
+
+@rzlRoutes(['admin', 'author'])
+```
+
+> Note: Passing group names to the `@rzlRoutes` directive will always take precedence over your other `only` or `except` settings.
+
 ---
 ## Routes File Generator
 
@@ -757,24 +789,6 @@ return [
     ],
 ];
 ```
-
-Then, you can expose a specific group by passing the group name into the `@rzlRoutes` Blade directive:
-
-```blade
-{{-- authors.blade.php --}}
-
-@rzlRoutes('author')
-```
-
-To expose multiple groups you can pass an array of group names:
-
-```blade
-{{-- admin.blade.php --}}
-
-@rzlRoutes(['admin', 'author'])
-```
-
-> Note: Passing group names to the `@rzlRoutes` directive will always take precedence over your other `only` or `except` settings.
 
 ## Automatically Regenerates File Routes
 
