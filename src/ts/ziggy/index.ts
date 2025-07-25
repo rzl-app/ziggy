@@ -1,9 +1,6 @@
-import { route } from "@/main/route";
-import { useRoute } from "@/main/react";
-import { rzlZiggyVue } from "@/main/vue";
-
-export { route, useRoute, rzlZiggyVue };
-
+export { route } from "@/main/route";
+export { useRoute } from "@/main/react";
+export { rzlZiggyVue } from "@/main/vue";
 export type {
   Config,
   RouterConfig,

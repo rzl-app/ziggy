@@ -1,12 +1,12 @@
 import { stringify } from "qs";
-import { CONFIG } from "@ts/utils/links";
+import { CONFIG } from "@ts/utils/constants";
 import RouteFactory from "./RouteFactory";
 import { RouterConfigClass } from "./RouterConfigClass";
-import { prefixError, RoutePropsError, RouterConfigError } from "./exceptions";
+import { RoutePropsError, RouterConfigError } from "./exceptions";
 
 import type { ParsedQs, RouteParams, RouterConfig } from "@/types";
 
-const { REPO } = CONFIG;
+const { REPO, PREFIX } = CONFIG;
 
 export class Router extends String {
   private _config: RouterConfig;
@@ -70,7 +70,7 @@ export class Router extends String {
       }
 
       throw new Error(
-        `${prefixError} - Unknown error while validating \`route()\` config`,
+        `${PREFIX.NAME} - Unknown error while validating \`route()\` config`,
         {
           cause: err instanceof Error ? err : undefined
         }

@@ -1,9 +1,9 @@
 import { route } from "@/main/route";
-import { prefixError } from "./class/exceptions";
+import { CONFIG } from "@ts/utils/constants";
 
 if (typeof globalThis.route !== "undefined") {
   console.warn(
-    `[${prefixError}]: ⚠️ Detected existing global \`route\`. It will be overridden by rzl-app-ziggy route implementation.`
+    `[${CONFIG.PREFIX.NAME}]: ⚠️ Detected existing global \`route\`. It will be overridden by rzl-app-ziggy route implementation.`
   );
 }
 

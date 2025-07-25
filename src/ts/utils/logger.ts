@@ -1,6 +1,7 @@
 import chalk from "chalk";
+import { CONFIG } from "./constants";
 
-const tag = chalk.bgHex("#00bcd4").black.bold(" RZL-ZIGGY ");
+const tag = chalk.bgHex("#00bcd4").black.bold(` ${CONFIG.PREFIX.NAME} `);
 
 export const logger = {
   info: (label: string, msg: string) => {

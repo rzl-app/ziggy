@@ -1,4 +1,4 @@
-export const prefixError = "Rzl-Ziggy";
+import { CONFIG } from "@ts/utils/constants";
 
 /** ---------------------------------
  * * ***Custom Error for Invalid Router Config***
@@ -10,7 +10,7 @@ export class RouterConfigError extends Error {
     public originalError?: Error,
     prefix?: string
   ) {
-    const trimmedPrefix = prefix?.trim() || prefixError;
+    const trimmedPrefix = prefix?.trim() || CONFIG.PREFIX.NAME;
     const trimmedMessage = message.trim();
 
     super(`${trimmedPrefix} - ${trimmedMessage}`);
@@ -33,7 +33,7 @@ export class RoutePropsError extends Error {
     public originalError?: Error,
     prefix?: string
   ) {
-    const trimmedPrefix = prefix?.trim() || prefixError;
+    const trimmedPrefix = prefix?.trim() || CONFIG.PREFIX.NAME;
     const trimmedMessage = message.trim();
 
     super(`${trimmedPrefix} - ${trimmedMessage}`);
