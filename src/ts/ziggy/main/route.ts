@@ -185,5 +185,3 @@ export function route<T extends ValidRouteName>(
 
   return name ? router.toString() : router;
 }
-
-const test = route("test", { id: 1 });
