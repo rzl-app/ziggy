@@ -1,80 +1,7 @@
-import chalk from "chalk";
-import { resolve } from "path";
-import { build } from "esbuild";
-import { globSync, readFileSync } from "fs";
-import { measureSize, toRelative } from "./utility";
+import { getCurrentModulePath, bannerBuilder, LOG_UTILS } from "./utility";
+import { buildAndLog, ConfigRoutes } from "./core/esbuild";
 
-const pkg = JSON.parse(readFileSync("package.json", "utf8"));
-const repoUrl =
-  (typeof pkg.repository === "string" ? pkg.repository : pkg.repository?.url) ??
-  pkg.homepage ??
-  "https://github.com/rzl-app/ziggy";
-
-const cleanUrl = repoUrl.replace(/^git\+/, "").replace(/\.git$/, "");
-const banner = `/*!
- * ${pkg.name} v${pkg.version}
- * ${pkg.description}
- * Repository: ${cleanUrl}
- * (c) ${new Date().getFullYear()} ${pkg.author}
- * Released under the ${pkg.license} License
- */
-`;
-
-console.log(
-  `\n${chalk.blueBright.bold("▶️  Starting build with esbuild...")}\n` +
-    `${chalk.gray("→")} ${chalk.cyan("Formats:")} ${chalk.yellow("ESM, CJS, IIFE")} ${chalk.gray("|")} ${chalk.magenta("Minify + Bundle")}`
-);
-
-const iifeFiles = globSync("src/ts/ziggy/**/*.{js,cjs,esm,mjs,ts}").filter(
-  (f) => f.includes("browser.ts")
-);
-
-type BuildAndLog = {
-  entry: string;
-  outfile: string;
-  format: "esm" | "cjs" | "iife";
-  platform: "browser" | "node";
-  globalName?: string;
-  banner?: { js: string };
-};
-const buildAndLog = async ({
-  entry,
-  outfile,
-  format,
-  platform,
-  globalName,
-  banner
-}: BuildAndLog) => {
-  const start = Date.now();
-  try {
-    await build({
-      entryPoints: [entry],
-      outfile,
-      treeShaking: true,
-      minify: true,
-      bundle: true,
-      charset: "utf8",
-      splitting: entry.endsWith(".esm.js") ? true : false,
-      format,
-      platform,
-      globalName,
-      banner,
-      external: ["vite-plugin-run", "vite", "fs", "path"],
-      allowOverwrite: false
-    });
-    const end = Date.now();
-    const sizeInfo = measureSize(toRelative(outfile));
-    console.log(
-      `✅ ${chalk.green(format.toUpperCase())} ${chalk.yellow(toRelative(entry))} → ${chalk.magenta(toRelative(outfile))} ${sizeInfo} ${chalk.gray(`[${end - start}ms]`)}`
-    );
-  } catch (err) {
-    console.error(`❌ ${chalk.red("Failed")} ${toRelative(outfile)}`, err);
-  }
-};
-
-type ConfigRoutes = Omit<BuildAndLog, "entry">[];
-
-const buildMainConfigs = [
+const mainConfig = [
   {
     format: "esm",
     outfile: "dist/index.esm.js",
@@ -86,7 +13,8 @@ const buildMainConfigs = [
     platform: "node"
   }
 ] satisfies ConfigRoutes;
-const buildVitePluginConfigs = [
+
+const vitePluginConfig = [
   {
     format: "cjs",
     outfile: "dist/vite-plugin/index.cjs",
@@ -99,31 +27,50 @@ const buildVitePluginConfigs = [
   }
 ] satisfies ConfigRoutes;
 
-await Promise.all([
-  ...buildMainConfigs.map((cfg) =>
+try {
+  LOG_UTILS.ON_START({
+    titleStart: "Starting build...",
+    processLabel: "Formats:",
+    processValue: "ESM, CJS, IIFE"
+  });
+
+  await Promise.all([
+    // main ziggy
+    ...mainConfig.map((cfg) =>
+      buildAndLog({
+        entry: "src\\ts\\ziggy\\index.ts",
+        outfile: cfg.outfile,
+        format: cfg.format,
+        platform: cfg.platform
+      })
+    ),
+
+    // vite-plugin
+    ...vitePluginConfig.map((cfg) =>
+      buildAndLog({
+        entry: "src\\ts\\vite-plugin\\index.ts",
+        outfile: cfg.outfile,
+        format: cfg.format,
+        platform: cfg.platform
+      })
+    ),
+
+    // iife
     buildAndLog({
-      entry: "src\\ts\\ziggy\\index.ts",
-      outfile: cfg.outfile,
-      format: cfg.format,
-      platform: cfg.platform
-    })
-  ),
-  ...buildVitePluginConfigs.map((cfg) =>
-    buildAndLog({
-      entry: "src\\ts\\vite-plugin\\index.ts",
-      outfile: cfg.outfile,
-      format: cfg.format,
-      platform: cfg.platform
-    })
-  ),
-  ...iifeFiles.map((file) =>
-    buildAndLog({
-      entry: resolve(file),
+      entry: "src\\ts\\ziggy\\browser.ts",
       outfile: "dist/rzl-ziggy.iife.js",
       format: "iife",
       platform: "browser",
-      // globalName: "RzlZiggy",
-      banner: { js: banner }
+      banner: {
+        js: bannerBuilder()
+      }
     })
-  )
-]);
+  ]);
+
+  LOG_UTILS.ON_FINISH({ text: "ALL BUILD FINISHED" });
+} catch (error) {
+  LOG_UTILS.ON_ERROR(error, {
+    message: "BUILD FAILED",
+    onFile: getCurrentModulePath(import.meta.url).__filename
+  });
+}

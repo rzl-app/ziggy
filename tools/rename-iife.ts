@@ -1,28 +1,42 @@
 import chalk from "chalk";
 import { resolve } from "path";
-import prettyBytes from "pretty-bytes";
-import { existsSync, renameSync, statSync } from "fs";
+import { existsSync, renameSync } from "fs";
+import { getFormatExt, LOG_UTILS, toRelative } from "./utility";
 
-const from = resolve("dist/index.iife.js");
-const to = resolve("dist/rzl-ziggy.iife.js");
+const fileInput = "index.iife.js";
+const fileOutput = "rzl-ziggy.iife.js";
 
-console.log(
-  `\n${chalk.blueBright.bold("▶️  Renaming IIFE build")}\n` +
-    `${chalk.gray("→")} ${chalk.yellow("index.iife.js")} ${chalk.gray("→")} ${chalk.cyan("rzl-ziggy.iife.js")}`
-);
+const from = resolve(`dist/${fileInput}`);
+const to = resolve(`dist/${fileOutput}`);
 
-const start = Date.now();
+LOG_UTILS.ON_START({
+  titleStart: "Renaming IIFE JS Build File...",
+  processLabel: "Preserve:",
+  processValue: "Rename iife only"
+});
 
-if (existsSync(from)) {
-  renameSync(from, to);
-  const size = statSync(to).size;
-  const duration = Date.now() - start;
+try {
+  const startTime = Date.now();
 
-  console.log(
-    `${chalk.green("✅ Renamed")} ${chalk.gray("→")} ${chalk.magenta("dist/rzl-ziggy.iife.js")} ${chalk.gray(`(${prettyBytes(size)}) [${duration}ms]`)}\n`
-  );
-} else {
-  console.warn(
-    `${chalk.yellow("⚠️  Skipped")} ${chalk.gray("File not found:")} ${chalk.red("dist/index.iife.js")}\n`
-  );
+  if (existsSync(from)) {
+    renameSync(from, to);
+    const endTime = Date.now();
+    const ext = getFormatExt(from);
+
+    LOG_UTILS.ON_PROCESS({
+      format: ext,
+      startTime,
+      endTime,
+      outFile: to,
+      entryFile: from
+    });
+
+    LOG_UTILS.ON_FINISH({ text: "RENAME FILE IIFE FINISH" });
+  } else {
+    LOG_UTILS.ON_WARNING({
+      message: `Skipped ${chalk.gray("File not found:")} ${chalk.red(toRelative(from))}`
+    });
+  }
+} catch (error) {
+  LOG_UTILS.ON_ERROR(error);
 }
