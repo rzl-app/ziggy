@@ -19,7 +19,6 @@ class BladeRouteGenerator
     $nonce = RzlZiggyHelper::formattingAttribute("nonce", $nonce);
     $ignoreMinify = $ignoreMinify ? ' ignore--minify' : '';
 
-    // $dataAttributes = count($dataAttribute) > 0 ? ' data="' . collect($dataAttribute)->implode(" ") . '"' : '';
     $dataAttributes = ($joined = collect($dataAttribute ?? [])
       ->map(function ($v, $k) {
         $k = trim($k, "\"' \t\n\r\0\v\x0B");

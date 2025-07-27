@@ -34,7 +34,7 @@ It is framework-agnostic and can be used with **Vue**, **React**, **Vanilla JS**
     - [Filtering with groups](#filtering-with-groups)
 - [**Routes File Generator**](#routes-file-generator)
     - [Using JavaScript/TypeScript](#using-javascript-or-typescript)
-    - [Output Path Generate](#output-path-generate)
+    - [Output Name File And Path To Generate](#output-name-file-and-path-to-generate)
 - [**Automatically Regenerates File Routes**](#automatically-regenerates-file-routes)
 - [**Other**](#other)
 - [**Contributing**](#contributing)
@@ -492,13 +492,13 @@ Rzl Ziggy provides an Artisan command to output its config and routes to a file:
 php artisan rzl-ziggy:generate
 ```
 
-This command places your configuration in `resources/routes/index.ts` by default, but you can customize this path by passing an argument to the Artisan command or setting in the laravel config file `rzl-ziggy.output.path.main` for name file [Output Path Generate](#output-path-generate) and `rzl-ziggy.lang` valid value is (`ts` or `js`) [Using JavaScript or TypeScript](#using-javascript-or-typescript).
+This command places your configuration in `resources/rzl-ziggy-routes/index.ts` by default, but you can customize this path by passing an argument to the Artisan command or setting in the laravel config file `rzl-ziggy.output.path.main` for name file [Output Name File And Path To Generate](#output-name-file-and-path-to-generate) and `rzl-ziggy.lang` valid value is (`ts` or `js`) [Using JavaScript or TypeScript](#using-javascript-or-typescript).
 
 The file `rzl-ziggy:generate` creates looks something like this:
 
 #### For TypeScript:
 ```ts
-// resources/routes/index.ts
+// resources/rzl-ziggy-routes/index.ts
 
 /** ---------------------------------
   * * ***Generates files/routes of app based on Laravel route names.***
@@ -528,7 +528,7 @@ export const appRoutes: string = `{
 ```
 #### For JavaScript:
 ```js
-// resources/routes/index.js
+// resources/rzl-ziggy-routes/index.js
 
 /** ---------------------------------
   * * ***Generates files/routes of app based on Laravel route names.***
@@ -762,37 +762,83 @@ You can also format your front-end using JavaScript or TypeScript when running t
 // config/rzl-ziggy.php
 
 return [
-    /**
-     * Using JavaScript or TypeScript?
-     *
-     * Default "ts" # ts = TypeScript (.ts) and js = JavaScript (.js)
-     * todo: Note: If lang value is invalid or empty, will force to ts (.ts)!
-     */
-    "lang" => "ts",
+  /** The language used for the generated route file.
+   *
+   * Valid options:
+   * - "ts" (TypeScript, .ts)
+   * - "js" (JavaScript, .js)
+   *
+   * Default: "ts"
+   *
+   * Notes:
+   * - If this config value (`rzl-ziggy.lang`) is invalid or empty, it defaults to "ts".
+   * - You can override it using the CLI option: `php artisan rzl-ziggy:generate --lang=...`
+   * - If the CLI `--lang` value is invalid, it falls back to this config value.
+   * - If both are invalid, "ts" will be used as a safe fallback.
+   */
+  "lang" => "ts",
+
+  // other you config...
 ];
 ```
 
-### Output Path Generate
+### Output Name File And Path To Generate
 
 You can also set the output location when running the Artisan command `php artisan rzl-ziggy:generate` or `php artisan rzl-ziggy:generate --types`:
 
+> ⚠️ Be careful when naming the folder and file: if the folder name and filename are the same
+>    (e.g. folder `routes/` and file `routes.ts`), a file with the same name inside the folder
+>    may be accidentally overwritten.
 ```php
 // config/rzl-ziggy.php
 
 return [
-    "output" => [ 
-      // Path Folder Generated
-      "path" => [
-          // Path Folder Generated of Main file (.js|.ts)
-          "main" => "resources/routes/index.ts",
-      ]
-    ],
+  /** Configuration for output paths and file naming during route generation.
+   *
+   * This controls where the generated JavaScript/TypeScript route file will be placed
+   * and what it will be named. You can override these settings using CLI options.
+   */
+  "output" => [
+    /** The name of the generated route file (without extension).
+     *
+     * Example: "index" will become "index.ts" or "index.js" depending on the selected `lang`.
+     *
+     * Notes:
+     * - The extension will be automatically added based on the `lang` value ("ts" or "js").
+     * - If this value is invalid or empty, it defaults to "index".
+     * - You can override this config using the CLI option: `--name=...`.
+     * - If both are invalid, "index" will be used as the safe default.
+     */
+    "name" => "index", 
+
+    /** Paths for output destination of the generated route files. */
+    "path" => [
+      /** The output folder path for the main generated route file.
+       *
+       * Example: "resources/rzl-ziggy-routes" will result in something like "resources/rzl-ziggy-routes/index.ts"
+       *
+       * Notes:
+       * - Do **not** prefix the path with "/" or "\\" — it should be relative to the project root.
+       * - This path can be overridden using the CLI option: `--path=...`
+       * - If the CLI `--path` is null, empty, or omitted, and this config value is also empty or invalid,
+       *   it will default to: `"resources/rzl-ziggy-routes"`.
+       * - If the provided path is invalid (e.g. not writable or not a directory), an error will be thrown.
+       * - This path does not include the filename or extension — only the folder.
+       * - ⚠️ Be careful when naming the folder and file: if the folder name and filename are the same
+       *   (e.g. folder `routes/` and file `routes.ts`), a file with the same name inside the folder
+       *   may be accidentally overwritten.
+       */
+      "main" => "resources/rzl-ziggy-routes",
+    ]
+  ],
+  
+  // other you config...
 ];
 ```
 
 ## Automatically Regenerates File Routes
 
-#### Rzl Ziggy includes a built-in Vite plugin that automatically generates a route index file (index.ts or index.js) based on your Laravel named routes (location depends your setting, see: [Output Path Generate](#routes-file-generator)).
+#### Rzl Ziggy includes a built-in Vite plugin that automatically generates a route index file (index.ts or index.js) based on your Laravel named routes (location depends your setting, see: [Output Name File And Path To Generate](#output-name-file-and-path-to-generate)).
 #### - Works the same as:
 ```bash
 php artisan rzl-ziggy:generate
