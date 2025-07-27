@@ -10,7 +10,7 @@ class File implements Stringable
 {
   public function __construct(protected RzlZiggy|string $ziggy, private $ext)
   {
-    if (config("rzl-ziggy.output.encrypting", true)) {
+    if (config("rzl-ziggy.output.encrypting", false)) {
       $this->ziggy = RzlZiggyHelper::encryptCryptPayload(json_encode($ziggy, JSON_UNESCAPED_SLASHES));
     } else {
       $this->ziggy = json_encode($ziggy, JSON_UNESCAPED_SLASHES);

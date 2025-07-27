@@ -133,7 +133,9 @@ class CommandRouteGenerator extends Command
     }
 
     if ($nameInput === '') {
-      $this->warn("{$this->PREFIX_LOG} Config fallback 'rzl-ziggy.output.name' is also empty. Using default value: 'index'");
+      if (config()->has('rzl-ziggy.output.name')) {
+        $this->warn("{$this->PREFIX_LOG} Config fallback 'rzl-ziggy.output.name' is also empty. Using default value: 'index'");
+      }
       return 'index';
     }
 
