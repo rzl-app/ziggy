@@ -493,13 +493,13 @@ Rzl Ziggy provides an Artisan command to output its config and routes to a file:
 php artisan rzl-ziggy:generate
 ```
 
-This command places your configuration in `resources/rzl-ziggy-routes/index.ts` by default, but you can customize this path by passing an argument to the Artisan command or setting in the laravel config file `rzl-ziggy.output.path.main` for name file [Output Name File And Path To Generate](#output-name-file-and-path-to-generate) and `rzl-ziggy.lang` valid value is (`ts` or `js`) [Using JavaScript or TypeScript](#using-javascript-or-typescript).
+This command places your configuration in `resources/js/rzl-ziggy/routes/index.ts` by default, but you can customize this path by passing an argument to the Artisan command or setting in the laravel config file `rzl-ziggy.output.path.main` for name file [Output Name File And Path To Generate](#output-name-file-and-path-to-generate) and `rzl-ziggy.lang` valid value is (`ts` or `js`) [Using JavaScript or TypeScript](#using-javascript-or-typescript).
 
 The file `rzl-ziggy:generate` creates looks something like this:
 
 #### For TypeScript:
 ```ts
-// resources/rzl-ziggy-routes/index.ts
+// resources/js/rzl-ziggy/routes/index.ts
 
 /** ---------------------------------
   * * ***Generates files/routes of app based on Laravel route names.***
@@ -529,7 +529,7 @@ export const appRoutes: string = `{
 ```
 #### For JavaScript:
 ```js
-// resources/rzl-ziggy-routes/index.js
+// resources/js/rzl-ziggy/routes/index.js
 
 /** ---------------------------------
   * * ***Generates files/routes of app based on Laravel route names.***
@@ -568,9 +568,11 @@ This means:
 - You must manually pass the config to the `route()` function.
 - Since `appRoutes` is a string, you need to parse it using `JSON.parse()` before passing it in.
 
+> ℹ️ Path import `import { appRoutes } from './rzl-ziggy/routes/index.js';` depend from your setting at config php file, see: [Output Name File And Path To Generate](#output-name-file-and-path-to-generate).
+
 ```js
 import { route } from '../../vendor/rzl-app/ziggy';
-import { appRoutes } from './routes/index.js';
+import { appRoutes } from './rzl-ziggy/routes/index.js';
 
 route('home', null, false, JSON.parse(appRoutes));
 route('home', undefined, undefined, JSON.parse(appRoutes));
@@ -626,10 +628,13 @@ const route = inject('route');
 
 If you are not using the `@rzlRoutes` Blade directive, import Rzl Ziggy's configuration too and pass it to `.use()`:
 
+
+> ℹ️ Path import `import { appRoutes } from './rzl-ziggy/routes/index.js';` depend from your setting at config php file, see: [Output Name File And Path To Generate](#output-name-file-and-path-to-generate). 
+
 ```js
 import { createApp } from 'vue';
 import { rzlZiggyVue } from 'rzl-app-ziggy';
-import { appRoutes } from './routes/index.js';
+import { appRoutes } from './rzl-ziggy/routes/index.js';
 import App from './App.vue';
 
 createApp(App).use(rzlZiggyVue, JSON.parse(appRoutes));
@@ -662,10 +667,12 @@ export default function PostsLink() {
 
 If you are not using the `@rzlRoutes` Blade directive, import Rzl Ziggy's configuration too and pass it to `useRoute()`:
 
+> ℹ️ Path import `import { appRoutes } from './rzl-ziggy/routes/index.js';` depend from your setting at config php file, see: [Output Name File And Path To Generate](#output-name-file-and-path-to-generate). 
+
 ```jsx
 import React from 'react';
 import { useRoute } from 'rzl-app-ziggy';
-import { appRoutes } from './routes/index.js';
+import { appRoutes } from './rzl-ziggy/routes/index.js';
 
 export default function PostsLink() {
     const route = useRoute(JSON.parse(appRoutes));
@@ -678,7 +685,7 @@ You can also make the `Rzl Ziggy` config object available globally, so you can c
 
 ```js
 // app.js
-import { appRoutes } from './routes/index.js';
+import { appRoutes } from './rzl-ziggy/routes/index.js';
 globalThis.appRoutes = JSON.parse(appRoutes);
 ```
 
@@ -825,20 +832,20 @@ return [
     "path" => [
       /** The output folder path for the main generated route file.
        *
-       * Example: "resources/rzl-ziggy-routes" will result in something like "resources/rzl-ziggy-routes/index.ts"
+       * Example: "resources/js/rzl-ziggy/routes" will result in something like "resources/js/rzl-ziggy/routes/index.ts"
        *
        * Notes:
        * - Do **not** prefix the path with "/" or "\\" — it should be relative to the project root.
        * - This path can be overridden using the CLI option: `--path=...`
        * - If the CLI `--path` is null, empty, or omitted, and this config value is also empty or invalid,
-       *   it will default to: `"resources/rzl-ziggy-routes"`.
+       *   it will default to: `"resources/js/rzl-ziggy/routes"`.
        * - If the provided path is invalid (e.g. not writable or not a directory), an error will be thrown.
        * - This path does not include the filename or extension — only the folder.
        * - ⚠️ Be careful when naming the folder and file: if the folder name and filename are the same
        *   (e.g. folder `routes/` and file `routes.ts`), a file with the same name inside the folder
        *   may be accidentally overwritten.
        */
-      "main" => "resources/rzl-ziggy-routes",
+      "main" => "resources/js/rzl-ziggy/routes",
     ]
   ],
   

@@ -46,20 +46,20 @@ return [
       /**
        * The output folder path for the main generated route file.
        *
-       * Example: "resources/rzl-ziggy-routes" will result in something like "resources/rzl-ziggy-routes/index.ts"
+       * Example: "resources/js/rzl-ziggy/routes" will result in something like "resources/js/rzl-ziggy/routes/index.ts"
        *
        * Notes:
        * - Do **not** prefix the path with "/" or "\\" — it should be relative to the project root.
        * - This path can be overridden using the CLI option: `--path=...`
        * - If the CLI `--path` is null, empty, or omitted, and this config value is also empty or invalid,
-       *   it will default to: `"resources/rzl-ziggy-routes"`.
+       *   it will default to: `"resources/js/rzl-ziggy/routes"`.
        * - If the provided path is invalid (e.g. not writable or not a directory), an error will be thrown.
        * - This path does not include the filename or extension — only the folder.
        * - ⚠️ Be careful when naming the folder and file: if the folder name and filename are the same
        *   (e.g. folder `routes/` and file `routes.ts`), a file with the same name inside the folder
        *   may be accidentally overwritten.
        */
-      "main" => "resources/rzl-ziggy-routes",
+      "main" => "resources/js/rzl-ziggy/routes",
 
     ]
   ],

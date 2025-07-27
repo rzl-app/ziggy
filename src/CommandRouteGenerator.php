@@ -14,7 +14,7 @@ class CommandRouteGenerator extends Command
   private $PREFIX_LOG = "[RZL ZIGGY]:";
 
   protected $signature = "rzl-ziggy:generate
-                        {--path= : Path to the generated JavaScript file. Default: `resources/rzl-ziggy-routes`.}
+                        {--path= : Path to the generated JavaScript file. Default: `resources/js/rzl-ziggy/routes`.}
                         {--name= : Filename to the generated JavaScript file. Default: `index`.}
                         {--lang= : Set language to JavaScript or TypeScript (default: `ts`). If invalid or empty, will fallback to `ts`.}
                         {--types : Generate with a TypeScript declaration file.}
@@ -263,7 +263,7 @@ class CommandRouteGenerator extends Command
     $lang = $lang === 'js' ? 'js' : 'ts';
 
     // Determine the raw path: priority → arg > config > default
-    $default ??= "resources/rzl-ziggy-routes/index.$lang";
+    $default ??= "resources/js/rzl-ziggy/routes/index.$lang";
     $raw = filled($argPath)
       ? trim($argPath)
       : (filled($configPath) ? trim($configPath) : $default);
