@@ -29,6 +29,7 @@ It is framework-agnostic and can be used with **Vue**, **React**, **Vanilla JS**
     - [Vue](#vue)
     - [React](#react)
     - [SPAs or separate repos](#spas-or-separate-repos)
+- [**Publish Config File**](#publish-config-file)
 - [**Filtering Routes**](#filtering-routes)
     - [Including/excluding routes](#includingexcluding-routes)
     - [Filtering with groups](#filtering-with-groups)
@@ -687,6 +688,15 @@ Rzl Ziggy's `route()` function is available as an NPM package, for use in JavaSc
 
 To make your routes available on the frontend for this function to use, you can either run `php artisan rzl-ziggy:generate` and add the generated config file to your frontend project, or you can return Rzl Ziggy's config as JSON from an endpoint in your Laravel API (see [Retrieving Rzl Ziggy's config from an API endpoint](#retrieving-rzl-ziggys-config-from-an-api-endpoint) below for an example of how to set this up).
 
+---
+## Publish Config File
+
+You can customize the default configuration of Rzl Ziggy by publishing the `rzl-ziggy.php` file to your `config` directory.
+Run the following command in your terminal:
+
+```bash
+php artisan vendor:publish --tag=rzl-ziggy
+```
 ---
 ## Filtering Routes
 

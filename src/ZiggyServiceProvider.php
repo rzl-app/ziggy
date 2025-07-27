@@ -34,7 +34,7 @@ class ZiggyServiceProvider extends ServiceProvider
 
       $this->publishes([
         __DIR__ . '/config/rzl-ziggy.php' => config_path('rzl-ziggy.php'),
-      ], 'RzlZiggy');
+      ], 'rzl-ziggy');
     }
   }
 
