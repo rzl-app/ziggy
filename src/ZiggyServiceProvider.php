@@ -17,10 +17,10 @@ class ZiggyServiceProvider extends ServiceProvider
 
   public function boot()
   {
-    if ($this->app->resolved('blade.compiler')) {
-      $this->registerDirective($this->app['blade.compiler']);
+    if ($this->app->resolved("blade.compiler")) {
+      $this->registerDirective($this->app["blade.compiler"]);
     } else {
-      $this->app->afterResolving('blade.compiler', function (BladeCompiler $bladeCompiler) {
+      $this->app->afterResolving("blade.compiler", function (BladeCompiler $bladeCompiler) {
         $this->registerDirective($bladeCompiler);
       });
     }
@@ -37,20 +37,20 @@ class ZiggyServiceProvider extends ServiceProvider
       $this->commands(CommandRouteGenerator::class);
 
       $this->publishes([
-        __DIR__ . '/config/rzl-ziggy.php' => config_path('rzl-ziggy.php'),
-      ], 'rzl-ziggy');
+        __DIR__ . "/config/rzl-ziggy.php" => config_path("rzl-ziggy.php"),
+      ], "rzl-ziggy");
     }
   }
 
 
   protected function registerDirective(BladeCompiler $blade): void
   {
-    $blade->directive('rzlRoutes', fn($group) => "<?php echo app('" . BladeRouteGenerator::class . "')->generate({$group}); ?>");
+    $blade->directive("rzlRoutes", fn($group) => "<?php echo app('" . BladeRouteGenerator::class . "')->generate({$group}); ?>");
   }
 
   protected function loadHelpers()
   {
-    foreach (glob(__DIR__ . '/Helpers/*.php') as $filename) {
+    foreach (glob(__DIR__ . "/Helpers/*.php") as $filename) {
       require_once $filename;
     }
   }

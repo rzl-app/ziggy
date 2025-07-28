@@ -14,9 +14,9 @@ class BladeRouteGenerator
   {
     $ziggy = new RzlZiggy($group);
 
-    foreach (compact('id', 'name', 'nonce') as $key => $value) {
-      $this->{$key} = RzlZiggyHelper::formattingAttribute($key, $value);
-    }
+    $id = RzlZiggyHelper::formattingAttribute("id", $id);
+    $name = RzlZiggyHelper::formattingAttribute("name", $name);
+    $nonce = RzlZiggyHelper::formattingAttribute("nonce", $nonce);
 
     $ignoreMinify = $ignoreMinify ? ' ignore--minify' : '';
 

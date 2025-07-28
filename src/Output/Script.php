@@ -11,18 +11,18 @@ class Script implements Stringable
   public function __construct(
     protected RzlZiggy $ziggy,
     protected string $function,
-    protected string $id = '',
-    protected string $name = '',
-    protected string $nonce = '',
-    protected string $dataAttribute = "",
-    protected string $ignoreMinify = ""
+    protected ?string $id = "",
+    protected ?string $name = "",
+    protected ?string $nonce = "",
+    protected ?string $dataAttribute = "",
+    protected ?string $ignoreMinify = ""
   ) {
     $this->function = str($function)
-      ->replace('/\s+/', '')
+      ->replace("/\s+/", "")
       ->trim()
-      ->finish(';');
+      ->finish(";");
 
-    foreach (compact('id', 'name', 'nonce', 'dataAttribute', 'ignoreMinify') as $key => $value) {
+    foreach (compact("id", "name", "nonce", "dataAttribute", "ignoreMinify") as $key => $value) {
       $this->{$key} = RzlZiggyHelper::appendSpaceAttribute($value);
     }
   }

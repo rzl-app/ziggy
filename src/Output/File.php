@@ -41,7 +41,7 @@ class File implements Stringable
     return <<<JAVASCRIPT
       const appRoutes = {$this->ziggy->toJson(JSON_UNESCAPED_SLASHES)};
 
-      if (typeof window !== 'undefined' && typeof window.appRoutes !== 'undefined') {
+      if (typeof window !== "undefined" && typeof window.appRoutes !== "undefined") {
         Object.assign(appRoutes.routes, window.appRoutes.routes);
       }
 

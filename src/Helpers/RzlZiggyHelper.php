@@ -126,7 +126,7 @@ final class RzlZiggyHelper
       return '';
     }
 
-    return ' ' . e(str($key)->trim()) . '="' . e($value) . '"';
+    return ' ' . e(str($key)->trim()->toString()) . '="' . e($value->toString()) . '"';
   }
 
   /** Appends a leading space to a string if it is not empty after trimming.
@@ -143,7 +143,7 @@ final class RzlZiggyHelper
   public static function appendSpaceAttribute($attribute): string
   {
     $attribute = str($attribute)->trim();
-    return $attribute->isEmpty() ? '' : " $attribute";
+    return $attribute->isEmpty() ? '' : " {$attribute->toString()}";
   }
 
   public static function generateComposerBanner(string $typeGenerate = "ts-files", string $packageName = 'rzl-app/ziggy'): string
