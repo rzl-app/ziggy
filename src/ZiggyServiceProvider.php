@@ -30,7 +30,6 @@ class ZiggyServiceProvider extends ServiceProvider
       BladeRouteGenerator::$generated = false;
     });
 
-
     RzlZiggyHelper::applyDefaultUrl();
 
     if ($this->app->runningInConsole()) {

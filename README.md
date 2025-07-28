@@ -879,8 +879,9 @@ php artisan rzl-ziggy:generate
 php artisan rzl-ziggy:generate --types
 ```
 #### - Auto-regenerates the file whenever:
-    - You change .env (e.g. APP_URL)
-    - You update any routes/*.php file
+    - You change `.env` (e.g. APP_URL).
+    - You update any `routes/*.php` file.
+    - You change on `config/rzl-ziggy.php` file.
     - No need to run manual commands—works live in development (npm run dev).
 
 #### - Setting in your vite.config.ts or vite.config.js, register the plugin:

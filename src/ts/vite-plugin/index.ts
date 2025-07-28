@@ -36,18 +36,24 @@ export default (config: Config = {}): Plugin => {
               run: cmd,
               pattern: [
                 "routes/**/*.php",
-                ".*.env",
-                ".*.*.env",
+                "config/rzl-ziggy.php",
+                ".env",
                 ".env.*",
                 ".env.*.*"
               ],
               condition: (file) => {
-                const relative = path.relative(process.cwd(), file);
+                const relative = path
+                  .relative(process.cwd(), file)
+                  .replace(/\\/g, "/");
 
                 return (
+                  (file.includes("/config/") &&
+                    file.endsWith("rzl-ziggy.php")) ||
                   (file.includes("/routes/") && file.endsWith(".php")) ||
-                  (file.includes("/") && file.includes(".env")) ||
-                  /^routes\/.*\.php$/.test(relative.replace(/\\/g, "/")) ||
+                  relative === ".env" ||
+                  relative.startsWith(".env.") ||
+                  /^config\/rzl-ziggy.php$/.test(relative) ||
+                  /^routes\/.*\.php$/.test(relative) ||
                   /\.env(\..+)?$/.test(relative)
                 );
               }
