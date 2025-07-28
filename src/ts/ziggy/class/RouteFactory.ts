@@ -159,7 +159,7 @@ export default class RouteFactory {
           }
         }
 
-        return encodeURI(String(value))
+        return encodeURI(String(value ?? ""))
           .replace(/%7C/g, "|")
           .replace(/%25/g, "%")
           .replace(/\$/g, "%24");
