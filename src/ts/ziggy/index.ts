@@ -15,5 +15,6 @@ export type {
   RouteParams,
   Router,
   TypeConfig,
+  ParameterValueProps,
   ValidRouteName
 } from "@/types";

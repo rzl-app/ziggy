@@ -51,12 +51,12 @@ export type RawParameterValue = string | number;
 type DefaultRoutable = { id: RawParameterValue } & Record<keyof any, unknown>;
 
 /** -------------------------------------------------------
- * * ***A route parameter value.***
+ * * ***A route parameter value 1.***
  * -------------------------------------------------------
  */
 export type ParameterValue = RawParameterValue | DefaultRoutable;
 /** -------------------------------------------------------
- * * ***A route parameter value.***
+ * * ***A route parameter value 2.***
  * -------------------------------------------------------
  */
 export type ParameterValueProps = DefaultRoutable;
