@@ -550,4 +550,4 @@ declare const rzlZiggyVue:{
      * * ***Rzl Ziggy's Install Route to Vue.***
      * -------------------------------------------------------
      */
-install:(app:VueApp,options?:Config)=>void;};export{type Config,type KnownRouteName,type ParameterValue,type ParameterValueProps,type ParsedQs,type RawParameterValue,type RouteDefinition,type RouteFactoryConfig,type RouteList,type RouteName,type RouteParams,type Router,type RouterConfig,type TypeConfig,type ValidRouteName,route,rzlZiggyVue,useRoute};
+install:(app:VueApp,options?:Config)=>void;};export{type Config,type KnownRouteName,type ParameterValue,type ParameterValueProps,type ParsedQs,type RawParameterValue,type ReactRouteHook,type RouteDefinition,type RouteFactoryConfig,type RouteList,type RouteName,type RouteParams,type Router,type RouterConfig,type TypeConfig,type ValidRouteName,route,rzlZiggyVue,useRoute};

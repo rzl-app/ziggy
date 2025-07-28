@@ -9,7 +9,7 @@ import type {
   ValidRouteName
 } from "@/types";
 
-type ReactRouteHook = {
+export type ReactRouteHook = {
   /** -------------------------------------------------------
    * * ***Rzl Ziggy's `route()` from `useRouter` helper.***
    * -------------------------------------------------------

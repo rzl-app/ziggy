@@ -1,5 +1,5 @@
 export { route } from "@/main/route";
-export { useRoute } from "@/main/react";
+export { useRoute, type ReactRouteHook } from "@/main/react";
 export { rzlZiggyVue } from "@/main/vue";
 export type {
   Config,
