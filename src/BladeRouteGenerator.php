@@ -14,9 +14,10 @@ class BladeRouteGenerator
   {
     $ziggy = new RzlZiggy($group);
 
-    $id = RzlZiggyHelper::formattingAttribute("id", $id);
-    $name = RzlZiggyHelper::formattingAttribute("name", $name);
-    $nonce = RzlZiggyHelper::formattingAttribute("nonce", $nonce);
+    foreach (compact('id', 'name', 'nonce') as $key => $value) {
+      $this->{$key} = RzlZiggyHelper::formattingAttribute($key, $value);
+    }
+
     $ignoreMinify = $ignoreMinify ? ' ignore--minify' : '';
 
     $dataAttributes = ($joined = collect($dataAttribute ?? [])
@@ -33,7 +34,7 @@ class BladeRouteGenerator
         return $value !== '' ? "data-{$key}=\"{$value}\"" : null;
       })
       ->filter()
-      ->implode(' ')) !== '' ? ' ' . $joined : '';
+      ->implode(' ')) !== '' ? " {$joined}" : '';
 
     if (static::$generated) {
       return (string) $this->generateMergeJavascript($ziggy, $id, $name, $nonce, $dataAttributes, $ignoreMinify);

@@ -7,6 +7,7 @@ use RzlApp\Ziggy\Output\File;
 use RzlApp\Ziggy\Output\Types;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use RzlApp\Ziggy\Helpers\RzlZiggyHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CommandRouteGenerator extends Command
@@ -17,6 +18,7 @@ class CommandRouteGenerator extends Command
                         {--path= : Path to the generated JavaScript file. Default: `resources/js/rzl-ziggy/routes`.}
                         {--name= : Filename to the generated JavaScript file. Default: `index`.}
                         {--lang= : Set language to JavaScript or TypeScript (default: `ts`). If invalid or empty, will fallback to `ts`.}
+                        {--locale= : Sets the default value for the {locale} route parameter (e.g., en, id, etc.)}
                         {--types : Generate with a TypeScript declaration file.}
                         {--types-only : Generate only a TypeScript declaration file.}
                         {--url=}
@@ -32,6 +34,12 @@ class CommandRouteGenerator extends Command
   public function handle()
   {
     $this->alert("Generating routes using 'artisan rzl-ziggy:generated'. Please wait a moment....");
+
+    $overrides = [];
+    if ($this->option('locale') && str($this->option('locale'))->isNotEmpty()) {
+      $overrides['locale'] = $this->option('locale');
+    }
+    RzlZiggyHelper::applyDefaultUrl($overrides);
 
     $ziggy = new RzlZiggy($this->option("group"), $this->option("url") ? url($this->option("url")) : null);
 

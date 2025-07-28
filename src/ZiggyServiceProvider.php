@@ -4,6 +4,7 @@ namespace RzlApp\Ziggy;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use RzlApp\Ziggy\Helpers\RzlZiggyHelper;
 use Laravel\Octane\Events\RequestReceived;
 use Illuminate\View\Compilers\BladeCompiler;
 
@@ -28,6 +29,9 @@ class ZiggyServiceProvider extends ServiceProvider
     Event::listen(RequestReceived::class, function () {
       BladeRouteGenerator::$generated = false;
     });
+
+
+    RzlZiggyHelper::applyDefaultUrl();
 
     if ($this->app->runningInConsole()) {
       $this->commands(CommandRouteGenerator::class);

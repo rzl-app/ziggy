@@ -33,6 +33,7 @@ It is framework-agnostic and can be used with **Vue**, **React**, **Vanilla JS**
 - [**Filtering Routes**](#filtering-routes)
     - [Including/excluding routes](#includingexcluding-routes)
     - [Filtering with groups](#filtering-with-groups)
+- [**Default Parameter Values**](#default-parameter-values)
 - [**Routes File Generator**](#routes-file-generator)
     - [Using JavaScript/TypeScript](#using-javascript-or-typescript)
     - [Output Name File And Path To Generate](#output-name-file-and-path-to-generate)
@@ -216,23 +217,12 @@ route('venues.events.show', {
 // '/venues/1/events/2?active=1&draft=0&overdue=1'
 ```
 
-#### Default parameter values
-
-Rzl Ziggy supports default route parameter values ([Laravel docs](https://laravel.com/docs/urls#default-values)).
-
-```php
-Route::get('{locale}/posts/{post}', fn (Post $post) => /* ... */)->name('posts.show');
-```
-
-```php
-// app/Http/Middleware/SetLocale.php
-
-URL::defaults(['locale' => $request->user()->locale ?? 'de']);
-```
-
+- #### Usage at JS/TS example:
 ```js
-route('posts.show', { post: 1 }, true);           // ➔ 'https://rzl.test/de/posts/1'
-route('posts.show', { post: 5, type: "active" }); // ➔ '/de/posts/5?type=active'
+route('posts.show', { post: 5, type: "active" });     // ➔ '/de/posts/5?type=active'
+route('posts.show', { post: 1 }, true);               // ➔ 'https://rzl.test/de/posts/1'
+route('posts.show', { post: 1, locale:"ar" });        // ➔ '/ar/posts/1'
+route('posts.show', { post: 1, locale:"en" }, true);  // ➔ 'https://rzl.test/en/posts/1'
 ```
 
 #### Examples
@@ -264,7 +254,7 @@ return axios.get(route('posts.show', post)).then((response) => response.data);
 
   - `Rzl-Ziggy Error: Function 'route()' was implicitly coerced to a primitive without a name.`
 
-  - `Rzl-Ziggy Error - Function route() was called without a name and used as a string. Pass a valid route name, or use route().current() to get the current route name, or...`
+  - `Rzl-Ziggy Error: Function route() was called without a name and used as a string. Pass a valid route name, or use route().current() to get the current route name, or...`
   
   - `Rzl-Ziggy Error: route() was called without a route name and then implicitly converted to a string. This typically happens when route() is used in a string context...`
   ```
@@ -723,6 +713,8 @@ To set up route filtering, create a config file in your Laravel app at `config/r
 
 return [
     'only' => ['home', 'posts.index', 'posts.show'],
+
+    // other you config...
 ];
 ```
 
@@ -733,6 +725,8 @@ You can use asterisks as wildcards in route filters. In the example below, `admi
 
 return [
     'except' => ['_debugbar.*', 'horizon.*', 'admin.*'],
+
+    // other you config...
 ];
 ```
 ### Filtering with groups
@@ -747,6 +741,8 @@ return [
         'admin' => ['admin.*', 'users.*'],
         'author' => ['posts.*'],
     ],
+
+    // other you config...
 ];
 ```
 
@@ -769,6 +765,43 @@ To expose multiple groups you can pass an array of group names:
 > Note: Passing group names to the `@rzlRoutes` directive will always take precedence over your other `only` or `except` settings.
 
 ---
+
+## Default Parameter Values
+
+Rzl Ziggy supports default route parameter values ([Laravel docs](https://laravel.com/docs/urls#default-values)).
+
+```php
+Route::get('{locale}/posts/{post}', fn (Post $post) => /* ... */)->name('posts.show');
+```
+#### With config file:
+> ℹ️ To generate config file, see: [**Publish Config File**](#publish-config-file).
+```php
+// config/rzl-ziggy.php
+
+return [
+    /** Default values for dynamic route parameters.
+     *
+     * These values will be applied automatically to any route parameter
+     * that exists in the route URI but is not explicitly passed during route generation.
+     *
+     * Useful for things like localization (e.g. `{locale}`), tenant identifiers (e.g. `{team}`),
+     * or filtering (e.g. `{type}`) without having to always specify them in the frontend.
+     *
+     * You can override these at runtime via `URL::defaults([...])`.
+     */
+    'defaults' => [
+        /** Default for `{locale}` route parameter. CLI `--locale` overrides this value. */
+        'locale' => env('APP_LOCALE', 'en'),
+
+        // another example:...
+        // 'type'   => 'default', // Default value for routes requiring {type}
+        // 'team'   => 'main',    // Default tenant/team identifier (e.g. {team})
+    ],
+
+    // other you config...
+];
+```
+---
 ## Routes File Generator
 
 ### Using JavaScript or TypeScript
@@ -779,25 +812,19 @@ You can also format your front-end using JavaScript or TypeScript when running t
 // config/rzl-ziggy.php
 
 return [
-  /** The language used for the generated route file.
-   *
-   * Valid options:
-   * - "ts" (TypeScript, .ts)
-   * - "js" (JavaScript, .js)
-   *
-   * Default: "ts"
-   *
-   * Notes:
-   * - If this config value (`rzl-ziggy.lang`) is invalid or empty, it defaults to "ts".
-   * - You can override it using the CLI option: `php artisan rzl-ziggy:generate --lang=...`
-   * - If the CLI `--lang` value is invalid, it falls back to this config value.
-   * - If both are invalid, "ts" will be used as a safe fallback.
-   */
   "lang" => "ts",
 
   // other you config...
 ];
 ```
+> ⚠️ Valid options: `"ts"` (TypeScript, .ts), `"js"` (JavaScript, .js) ,default: `"ts"`.
+
+> ℹ️ Notes:
+>    - If this config value (`rzl-ziggy.lang`) is invalid or empty, it defaults to `"ts"`.
+>    - You can override it using the CLI option: `php artisan rzl-ziggy:generate --lang=...`.
+>    - If the CLI `--lang` value is invalid, it falls back to this config value.
+>    - If both are invalid, "ts" will be used as a safe fallback.
+> 
 
 ### Output Name File And Path To Generate
 
@@ -806,46 +833,16 @@ You can also set the output location when running the Artisan command `php artis
 > ⚠️ Be careful when naming the folder and file: if the folder name and filename are the same
 >    (e.g. folder `routes/` and file `routes.ts`), a file with the same name inside the folder
 >    may be accidentally overwritten.
+
 ```php
 // config/rzl-ziggy.php
 
 return [
-  /** Configuration for output paths and file naming during route generation.
-   *
-   * This controls where the generated JavaScript/TypeScript route file will be placed
-   * and what it will be named. You can override these settings using CLI options.
-   */
   "output" => [
-    /** The name of the generated route file (without extension).
-     *
-     * Example: "index" will become "index.ts" or "index.js" depending on the selected `lang`.
-     *
-     * Notes:
-     * - The extension will be automatically added based on the `lang` value ("ts" or "js").
-     * - If this value is invalid or empty, it defaults to "index".
-     * - You can override this config using the CLI option: `--name=...`.
-     * - If both are invalid, "index" will be used as the safe default.
-     */
-    "name" => "index", 
+    "name" => "index", // → index.ts or index.js
 
-    /** Paths for output destination of the generated route files. */
     "path" => [
-      /** The output folder path for the main generated route file.
-       *
-       * Example: "resources/js/rzl-ziggy/routes" will result in something like "resources/js/rzl-ziggy/routes/index.ts"
-       *
-       * Notes:
-       * - Do **not** prefix the path with "/" or "\\" — it should be relative to the project root.
-       * - This path can be overridden using the CLI option: `--path=...`
-       * - If the CLI `--path` is null, empty, or omitted, and this config value is also empty or invalid,
-       *   it will default to: `"resources/js/rzl-ziggy/routes"`.
-       * - If the provided path is invalid (e.g. not writable or not a directory), an error will be thrown.
-       * - This path does not include the filename or extension — only the folder.
-       * - ⚠️ Be careful when naming the folder and file: if the folder name and filename are the same
-       *   (e.g. folder `routes/` and file `routes.ts`), a file with the same name inside the folder
-       *   may be accidentally overwritten.
-       */
-      "main" => "resources/js/rzl-ziggy/routes",
+      "main" => "resources/js/rzl-ziggy/routes", // Output folder only
     ]
   ],
   
@@ -853,6 +850,25 @@ return [
 ];
 ```
 
+> ℹ️ **The `"output.name"` is name of the generated route file (without extension).**  
+>     Example: `"index"` will become `index.ts` or `index.js` depending on the selected `lang`.  
+>      
+>     Notes:  
+>     - The extension will be automatically added based on the `lang` value (`"ts"` or `"js"`).  
+>     - If this value is invalid or empty, it defaults to `"index"`.  
+>     - You can override this config using the CLI option: `--name=...`.  
+>     - If both are invalid, `"index"` will be used as the safe default.
+
+> ℹ️ **The `"output.path.main"` is output folder path for the main generated route file.**  
+>     Example: `"resources/js/rzl-ziggy/routes"` will result in something like `"resources/js/rzl-ziggy/routes/index.ts"`  
+>      
+>     Notes:  
+>     - Do **not** prefix the path with `/` or `\\` — it should be relative to the project root.  
+>     - This path can be overridden using the CLI option: `--path=...`  
+>     - If the CLI `--path` is null, empty, or omitted, and this config value is also empty or invalid, it will default to: `"resources/js/rzl-ziggy/routes"`.  
+>     - If the provided path is invalid (e.g. not writable or not a directory), an error will be thrown.  
+>     - This path does **not** include the filename or extension — only the folder.
+---
 ## Automatically Regenerates File Routes
 
 #### Rzl Ziggy includes a built-in Vite plugin that automatically generates a route index file (index.ts or index.js) based on your Laravel named routes (location depends your setting, see: [Output Name File And Path To Generate](#output-name-file-and-path-to-generate)).

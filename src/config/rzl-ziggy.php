@@ -64,6 +64,25 @@ return [
     ]
   ],
 
+  /** Default values for dynamic route parameters.
+   *
+   * These values will be applied automatically to any route parameter
+   * that exists in the route URI but is not explicitly passed during route generation.
+   *
+   * Useful for things like localization (e.g. `{locale}`), tenant identifiers (e.g. `{team}`),
+   * or filtering (e.g. `{type}`) without having to always specify them in the frontend.
+   *
+   * You can override these at runtime via `URL::defaults([...])`.
+   */
+  'defaults' => [
+    /** Default for `{locale}` route parameter. CLI `--locale` overrides this value. */
+    // 'locale' => env('APP_LOCALE', 'en'),
+
+    // another example:...
+    // 'type'   => 'default', // Default value for routes requiring {type}
+    // 'team'   => 'main',    // Default tenant/team identifier (e.g. {team})
+  ],
+
   /** Filter the named routes that will be included in the generated output.
    *
    * You may define an array of route names or wildcard patterns to include.
@@ -112,7 +131,6 @@ return [
     "sanctum.csrf-cookie",
     "minify.assets",
   ],
-
 
   // !# Filtering with groups
   // ?: Define named groups of routes for contextual loading (e.g. dashboard, homepage)

@@ -144,12 +144,12 @@ export default class RouteFactory {
       (_match, segment: string, optional: string) => {
         const value = params[segment];
 
-        if (value === undefined || value === null) {
-          if (optional) return "";
+        if (!optional && (value === undefined || value === null)) {
           throw new RoutePropsError(
             `Invalid \`${segment}\` parameter is required for route \`${this.name}\`.`
           );
         }
+
         if (this.wheres[segment]) {
           const regex = new RegExp(`^${this.wheres[segment]}$`);
           if (!regex.test(String(value))) {

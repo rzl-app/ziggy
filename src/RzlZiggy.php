@@ -14,6 +14,7 @@ use Illuminate\Support\Reflector;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Folio\Pipeline\MatchedView;
+use RzlApp\Ziggy\Helpers\RzlZiggyHelper;
 use Illuminate\Contracts\Routing\UrlRoutable;
 use Laravel\Folio\Pipeline\PotentiallyBindablePathSegment;
 
@@ -146,28 +147,25 @@ class RzlZiggy implements JsonSerializable
     ));
   }
 
-  /**
-   * Convert this Ziggy instance to an array.
-   */
+  /** Convert this Ziggy instance to an array. */
   public function toArray(): array
   {
     return [
       'url' => $this->url,
       'port' => parse_url($this->url, PHP_URL_PORT) ?? null,
-      'defaults' => app('url')->getDefaultParameters(),
+      'defaults' => RzlZiggyHelper::applyDefaultUrl(),
       'routes' => $this->applyFilters($this->group)->toArray(),
     ];
   }
 
 
-  /**
-   * Convert this Ziggy instance into something JSON serializable.
-   * 
+  /** Convert this Ziggy instance into something JSON serializable.
+   *
    * Use full for generate `config` for passing to `route()` function js.
-   * 
+   *
    * Example:
    * ```php
-   * 
+   *
    *   'rzlZiggy' => fn(): array => [
    *      ...(new RzlZiggy)->jsonSerialize(),
    *       "location" => [
@@ -176,18 +174,18 @@ class RzlZiggy implements JsonSerializable
    *   ]
    * ```
    *  or you can pass config directly
-   * 
+   *
    * ```php
    *   'rzlZiggy' => fn(): array => [
-   *      ...(new RzlZiggy)->jsonConfigsCsr(), 
+   *      ...(new RzlZiggy)->jsonConfigsCsr(),
    *   ]
    * // or with ssr:
    *    'rzlZiggy' => fn(): array => [
-   *      ...(new RzlZiggy)->jsonConfigsSsr(), 
+   *      ...(new RzlZiggy)->jsonConfigsSsr(),
    *   ]
    * ```
    *
-   * 
+   *
    */
   public function jsonSerialize(): array
   {
@@ -199,18 +197,18 @@ class RzlZiggy implements JsonSerializable
 
   /**
    * Convert this Ziggy instance into something JSON config with location for `CSR Only`.
-   * 
+   *
    * Use full for generate `config` for passing to `route()` function js.
-   * 
-   * Example: 
-   * 
+   *
+   * Example:
+   *
    * ```php
    *   'rzlZiggy' => fn(): array => [
-   *      ...(new RzlZiggy)->jsonConfigsCsr(), 
+   *      ...(new RzlZiggy)->jsonConfigsCsr(),
    *   ]
    * ```
    *
-   * 
+   *
    */
   public function jsonConfigsCsr(null|\Illuminate\Http\Request $request = null): array
   {
@@ -226,18 +224,18 @@ class RzlZiggy implements JsonSerializable
 
   /**
    * Convert this Ziggy instance into something JSON config with location for `SSR Only`.
-   * 
+   *
    * Use full for generate `config` for passing to `route()` function js.
-   * 
-   * Example: 
-   * 
+   *
+   * Example:
+   *
    * ```php
    *   'rzlZiggy' => fn(): array => [
-   *      ...(new RzlZiggy)->jsonConfigsSsr(), 
+   *      ...(new RzlZiggy)->jsonConfigsSsr(),
    *   ]
    * ```
    *
-   * 
+   *
    */
   public function jsonConfigsSsr(null|\Illuminate\Http\Request $request = null): array
   {
@@ -264,7 +262,6 @@ class RzlZiggy implements JsonSerializable
   /**
    * Resolve route key names for any route parameters using Eloquent route model binding.
    */
-
   private function resolveBindings(array $routes): array
   {
     foreach ($routes as $name => $route) {

@@ -3,11 +3,32 @@
 namespace RzlApp\Ziggy\Helpers;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 
 final class RzlZiggyHelper
 {
+  /** * Merge config and runtime default parameters, then apply to URL::defaults().
+   *
+   * @param  array  $overrides  Additional overrides, like from CLI options.
+   * @return array The merged default parameters that were applied.
+   */
+  public static function applyDefaultUrl(array $overrides = []): array
+  {
+    $defaults = array_merge(
+      config('rzl-ziggy.defaults', []),
+      URL::getDefaultParameters() ?? [],
+      $overrides,
+    );
+
+    if (filled($defaults)) {
+      URL::defaults($defaults);
+    }
+
+    return $defaults;
+  }
+
   /** -------------------------------
    * * ***Get File Path.***
    * -------------------------------
@@ -177,9 +198,6 @@ final class RzlZiggyHelper
     $name = $composer->get('name', $packageName);
     $versionLatestPackagist = self::getComposerLatestVersion($name);
     $license = $composer->get('license', 'MIT');
-    // $desc = $composer->get('description', '');
-    // $versionPkg = ltrim($versionPkg, 'v');
-    // $versionComposer = ltrim($versionComposer, 'v');
 
     $repoName = str($name)->afterLast("github.com");
 
@@ -222,7 +240,7 @@ final class RzlZiggyHelper
 
       return $data['dist-tags']['latest'] ?? '0.0.0';
     } catch (\Throwable $e) {
-      return '0.0.0'; // fallback kalau error jaringan
+      return '0.0.0';
     }
   }
 
@@ -246,7 +264,6 @@ final class RzlZiggyHelper
 
       $latest = $versions[0]['version'] ?? 'dev-main';
 
-      // return ltrim($latest, 'v');
       return $latest;
     } catch (\Throwable $e) {
       return 'dev-main';

@@ -2,20 +2,29 @@
 
 namespace RzlApp\Ziggy\Output;
 
-use RzlApp\Ziggy\Helpers\RzlZiggyHelper;
 use Stringable;
 use RzlApp\Ziggy\RzlZiggy;
+use RzlApp\Ziggy\Helpers\RzlZiggyHelper;
 
 class Script implements Stringable
 {
-  public function __construct(protected RzlZiggy $ziggy, protected string $function, protected string $id = '', protected string $name = '', protected string $nonce = '', protected string $dataAttribute = "", protected string $ignoreMinify = "")
-  {
-    $this->function = str($function)->replace('/\s+/', '')->trim();
-    $this->id = RzlZiggyHelper::appendSpaceAttribute($id);
-    $this->name = RzlZiggyHelper::appendSpaceAttribute($name);
-    $this->nonce = RzlZiggyHelper::appendSpaceAttribute($nonce);
-    $this->dataAttribute = RzlZiggyHelper::appendSpaceAttribute($dataAttribute);
-    $this->ignoreMinify = RzlZiggyHelper::appendSpaceAttribute($ignoreMinify);
+  public function __construct(
+    protected RzlZiggy $ziggy,
+    protected string $function,
+    protected string $id = '',
+    protected string $name = '',
+    protected string $nonce = '',
+    protected string $dataAttribute = "",
+    protected string $ignoreMinify = ""
+  ) {
+    $this->function = str($function)
+      ->replace('/\s+/', '')
+      ->trim()
+      ->finish(';');
+
+    foreach (compact('id', 'name', 'nonce', 'dataAttribute', 'ignoreMinify') as $key => $value) {
+      $this->{$key} = RzlZiggyHelper::appendSpaceAttribute($value);
+    }
   }
 
   public function __toString(): string

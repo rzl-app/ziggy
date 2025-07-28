@@ -178,11 +178,21 @@ export class Router extends String {
     };
   }
 
-  private _defaults(route: typeof this._route = this._route) {
+  /**
+   * Populate default parameters for the given route.
+   *
+   * @example
+   * // with default parameters { locale: 'en', country: 'US' } and 'posts.show' route '{locale}/posts/{post}'
+   * defaults(...); // { locale: 'en' }
+   *
+   * @param {Route} route
+   * @return {Object} Default route parameters.
+   */
+  private _defaults(route: typeof this._route) {
     return route?.parameterSegments
       .filter(({ name }) => this._config.defaults[name])
       .reduce(
-        (result, { name }) => ({
+        (result, { name }, i) => ({
           ...result,
           [name]: this._config.defaults[name]
         }),
@@ -190,6 +200,16 @@ export class Router extends String {
       );
   }
 
+  /**
+   * Substitute Laravel route model bindings in the given parameters.
+   *
+   * @example
+   * _substituteBindings({ post: { id: 4, slug: 'hello-world', title: 'Hello, world!' } }, { bindings: { post: 'slug' } }); // { post: 'hello-world' }
+   *
+   * @param {Object} params - Route parameters.
+   * @param {Object} route - Route definition.
+   * @return {Object} Normalized route parameters.
+   */
   private _substituteBindings(
     params: Record<string, string | Record<string, string>>,
     route: typeof this._route = this._route
